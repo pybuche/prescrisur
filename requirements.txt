@@ -1,4 +1,4 @@
-Flask==0.10.1
+Flask==0.12.3
 Flask-Login==0.3.2
 Flask-Mail==0.9.1
 Flask-CORS==2.1.2
@@ -21,6 +21,6 @@ gunicorn==19.5.0
 gevent==1.1.1
 sentinels==0.0.6
 mock==1.0.1
-requests==2.10.0
+requests==2.20.0
 requests-mock==0.7.0
 py==1.4.32
