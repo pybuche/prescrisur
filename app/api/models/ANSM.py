@@ -27,8 +27,8 @@ class ANSMObject(BaseModel):
 
 	@classmethod
 	def search_by_name(cls, name, proj='default', search_within_deleted=False):
-		name = name.replace("e", "[eéèêë]")
-		name = name.replace("E", "[eéèêë]")
+		name = name.replace("e", "[eéèêë]".decode('UTF-8'))
+		name = name.replace("E", "[eéèêë]".decode('UTF-8'))
 		regx = re.compile(name, re.IGNORECASE)
 		query = {'$or': [{'name': regx}, {'_id': regx}]}
 		if not search_within_deleted:

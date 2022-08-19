@@ -208,9 +208,7 @@ def edit_page(page_id=None):
 @api.route('/api/pages/<page_id>', methods=['GET'])
 @monitored
 def page(page_id=None):
-	return '"test"'
 	p = Page.get(page_id)
-	return p
 	if not p:
 		abort(404)
 	return jsonify(data=p)
