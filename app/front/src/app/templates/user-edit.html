@@ -1,0 +1,47 @@
+<div class="row" id="page-header">
+	<h1>Modifier mon Profil</h1>
+</div>
+
+<div id="content" class="row caduceus">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<form id="user-edit" class="form form-horizontal" ng-submit="submit()">
+		<h2>Modifier vos données personnelles</h2>
+		<div class="form-group">
+			<label for="name" class="control-label col-md-3">Email</label>
+			<div class="col-md-9">
+				<input type="email" id="email" class="form-control" ng-model="me.email" placeholder="Email" required/>
+			</div>
+			<label for="name" class="control-label col-md-3">Nom</label>
+			<div class="col-md-9">
+				<input type="text" id="name" class="form-control" ng-model="me.name" placeholder="Nom" required/>
+			</div>
+		</div>
+
+		<h2>Modifier votre mot de passe</h2>
+		<div class="form-group">
+			<label for="current-passwd" class="control-label col-md-3">Mot de passe actuel</label>
+			<div class="col-md-9">
+				<input type="password" id="current-passwd" class="form-control" ng-model="me.currentPasswd" placeholder="Mot de passe actuel"/>
+			</div>
+			<label for="new-passwd" class="control-label col-md-3">Nouveau mot de passe</label>
+			<div class="col-md-9">
+				<input type="password" id="new-passwd" class="form-control" ng-model="me.newPasswd"
+				       ng-change="checkPassword()" placeholder="Nouveau mot de passe" />
+			</div>
+			<label for="confirm-new-passwd" class="control-label col-md-3">Confirmation</label>
+			<div class="col-md-9">
+				<input type="password" id="confirm-new-passwd" class="form-control" ng-model="me.confirmNewPasswd"
+				       ng-change="checkPassword()" placeholder="Confirmation du mot de passe" />
+				<small class="red" ng-show="badConfirmPasswd">Confirmation erronée</small>
+			</div>
+		</div>
+
+		<button class="btn btn-primary btn-lg col-md-3 col-md-offset-3" ng-disabled="disabled">
+			<span ng-if="disabled">
+				<i class="fa fa-spinner"></i> Enregistrement...
+			</span>
+			<span ng-if="!disabled">Enregistrer</span>
+		</button>
+	</form>
+</div>

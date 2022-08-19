@@ -1,0 +1,100 @@
+<div class="row" id="page-header">
+	<h1>Administration des Pathologies</h1>
+</div>
+
+<div id="content" class="row caduceus">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<div class="col-lg-6">
+		<h2>Brouillons en cours ({{ drafts.length }})</h2>
+
+		<div class="right-inner-icon">
+			<i class="fa fa-search"></i>
+			<input type="search" class="form-control" ng-model="draftQuery" placeholder="Filtrer par nom"/>
+		</div>
+
+		<div class="panel panel-default">
+			<table id="drafts-list" class="table table-condensed table-striped table-bordered">
+				<tr>
+					<th>Nom</th>
+					<th>Mise à jour</th>
+					<th>Actions</th>
+				</tr>
+				<tr ng-repeat="draft in filteredDrafts = (drafts | filter:{name: draftQuery} | orderBy:'name')">
+					<td>{{ draft.name }}</td>
+					<td>{{ draft.updated_at | date:'dd/MM/yyyy HH:mm' }}</td>
+					<td class="actions">
+						<div class="btn-group btn-group-xs">
+							<a class="btn btn-default" ui-sref="pathologies.read({id: draft._id, draft: true})">
+								<i class="fa fa-eye"></i> Voir
+							</a>
+							<a class="btn btn-default" ui-sref="pathologies.edit({id: draft._id, draft: true})">
+								<i class="fa fa-pencil"></i> Modifier
+							</a>
+							<a class="btn btn-success" ng-click="validate(draft._id)">
+								<i class="fa fa-check"></i> Valider
+							</a>
+							<a class="btn btn-danger" ng-click="delete(draft._id, true)">
+								<i class="fa fa-check"></i> Supprimer
+							</a>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="!drafts">
+					<td colspan="3">
+						Aucun brouillon pour le moment.
+						<a ui-sref="pathologies.new">Créer une Pathologie</a>
+					</td>
+				</tr>
+				<tr ng-if="drafts && !filteredDrafts.length">
+					<td colspan="3">
+						Aucun brouillon ne correspond à ces critères.
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="col-lg-6">
+		<h2>Pathologies Validées ({{ pathologies.length }})</h2>
+
+		<div class="right-inner-icon">
+			<i class="fa fa-search"></i>
+			<input type="search" class="form-control" ng-model="pathoQuery" placeholder="Filtrer par nom"/>
+		</div>
+
+		<div class="panel panel-default">
+			<table id="pathologies-list" class="table table-condensed table-striped table-bordered">
+				<tr>
+					<th>Nom</th>
+					<th>Actions</th>
+				</tr>
+				<tr ng-repeat="patho in filteredPathologies = (pathologies | filter:{name: pathoQuery} | orderBy:'name')">
+					<td>{{ patho.name }}</td>
+					<td class="actions">
+						<div class="btn-group btn-group-xs">
+							<a class="btn btn-default" ui-sref="pathologies.read({id: patho._id})">
+								<i class="fa fa-eye"></i> Voir
+							</a>
+							<a class="btn btn-default" ui-sref="pathologies.edit({id: patho._id})">
+								<i class="fa fa-pencil"></i> Modifier
+							</a>
+							<a class="btn btn-warning" ng-click="unvalidate(patho._id)">
+								<i class="fa fa-times"></i> Invalider
+							</a>
+<!-- 							<a class="btn btn-danger" ng-click="delete(draft._id, false)">
+								<i class="fa fa-check"></i> Supprimer
+							</a> -->
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="!filteredPathologies.length">
+					<td colspan="2">
+						Aucune pathologie ne correspond à ces critères.
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+</div>

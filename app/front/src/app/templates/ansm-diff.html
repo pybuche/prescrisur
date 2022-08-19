@@ -1,0 +1,92 @@
+<div class="row news" id="page-header">
+	<h1 class="title">Différentiel ANSM</h1>
+</div>
+
+<div id="content" class="row caduceus">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<div ng-if="!specLoaded">
+		<h2 class="center"><i class="fa fa-spinner"></i>Chargement des spécialités...</h2>
+	</div>
+
+	<div ng-if="!substLoaded">
+		<h2 class="center"><i class="fa fa-spinner"></i>Chargement des substances...</h2>
+	</div>
+
+	<!--<div class="alert alert-info">
+		Denière mise à jour ANSM : <span class="bold">{{ ::specialities[0].created_at | date:'mediumDate' }}</span>
+	</div>-->
+
+	<form class="form">
+		<div class="right-inner-icon">
+			<i class="fa fa-search"></i>
+			<input type="search" class="form-control" ng-model="filterQuery" placeholder="Filtrer par nom de substance / spécialité"/>
+		</div>
+		<div class="form-group right-inner-icon left-placeholder">
+			<span class="placeholder">Filtrer à partir du</span>
+			<i class="fa fa-calendar"></i>
+			<input type="date" class="form-control" ng-model="dateFrom">
+		</div>
+	</form>
+
+	<div ng-if="specLoaded">
+		<h2>
+			Spécialités
+			<span class="fa" ng-class="showSpecs ? 'fa-chevron-up' : 'fa-chevron-down'" ng-model="showSpecs" uib-btn-checkbox></span>
+		</h2>
+		<div ng-if="showSpecs" class="specialities row">
+			<div class="col-md-6">
+				<h3>Nouvelles Spécialités</h3> <!-- TODO: Order by date not datetime -->
+				<div ng-repeat="spec in newSpecs = (specialities | filter: { deleted_at:null, created_at:'', name: filterQuery } | dateFromFilter:'created_at':dateFrom | orderBy:'-created_at')">
+					<span class="date">{{ ::spec.created_at | date:'dd/MM/yyyy' }}</span>
+					<a ui-sref="specialities({id: spec._id})">{{ ::spec.name }}</a>
+				</div>
+				<div ng-if="!newSpecs.length">
+					Aucune nouvelle spécialité depuis cette date
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<h3>Spécialités Supprimées</h3>
+				<div ng-repeat="spec in deletedSpecs = (specialities | filter: { deleted_at: '', name: filterQuery } | dateFromFilter:'deleted_at':dateFrom | orderBy:'-deleted_at')">
+					<span class="date">{{ ::spec.deleted_at | date:'dd/MM/yyyy' }}</span>
+					<a ui-sref="specialities({id: spec._id})">{{ ::spec.name }}</a>
+				</div>
+				<div ng-if="!deletedSpecs.length">
+					Aucune spécialité supprimée depuis cette date
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div ng-if="substLoaded">
+		<h2>
+			Substances
+			<span class="fa" ng-class="showSubsts ? 'fa-chevron-up' : 'fa-chevron-down'" ng-model="showSubsts" uib-btn-checkbox></span>
+		</h2>
+		<div ng-if="showSubsts" class="substances row">
+			<div class="col-md-6">
+				<h3>Nouvelles Substances</h3>
+				<div ng-repeat="subst in newSubsts = (substances | filter: { deleted_at: null, created_at: '', name: filterQuery } | dateFromFilter:'created_at':dateFrom | orderBy:'-created_at')">
+					<span class="date">{{ ::subst.created_at | date:'dd/MM/yyyy' }}</span>
+					<a ui-sref="substances({id: spec._id})">{{ ::subst.name }}</a>
+				</div>
+				<div ng-if="!newSubsts.length">
+					Aucune nouvelle substance depuis cette date
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<h3>Substances Supprimées</h3>
+				<div ng-repeat="subst in deletedSubsts = (substances | filter: { deleted_at: '', name: filterQuery } | dateFromFilter:'deleted_at':dateFrom | orderBy:'-deleted_at')">
+					<span class="date">{{ ::subst.deleted_at | date:'dd/MM/yyyy' }}</span>
+					<a ui-sref="substances({id: spec._id})">{{ ::subst.name }}</a>
+				</div>
+				<div ng-if="!deletedSubsts.length">
+					Aucune substance supprimée depuis cette date
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

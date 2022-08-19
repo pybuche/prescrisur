@@ -1,0 +1,168 @@
+<div class="row" id="page-header">
+	<h1 ng-if="!pathology.name">Nouvelle Pathologie</h1>
+	<h1 ng-if="pathology.name">{{ pathology.name }}</h1>
+</div>
+
+<div id="content" class="row">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<div ng-if="!pathology">
+		<h2 class="center"><i class="fa fa-spinner"></i> Chargement de la Pathologie</h2>
+	</div>
+
+	<form ng-submit="submit()" ng-if="pathology" id="pathology-form" class="form-horizontal">
+		<!-- Pathology Name -->
+		<div class="form-group">
+			<input class="form-control" type="text" ng-model="pathology.name" placeholder="Pathologie (max 50 caractères)" maxlength="50" required/>
+		</div>
+		<!-- Introduction text -->
+		<div class="form-group">
+			<label>Présentation</label>
+			<text-angular ng-model="pathology.intro" class="pathology-editor"></text-angular>
+		</div>
+		<!-- Pathology Tree -->
+		<div class="pathology-tree">
+			<div ng-repeat="data in pathology.levels" ng-include="'patho-edit-tree.html'" class="level"></div>
+		</div>
+
+		<!-- Conclusion text -->
+		<div class="form-group">
+			<label>Conclusion</label>
+			<text-angular ng-model="pathology.conclu" class="pathology-editor"></text-angular>
+		</div>
+		<div class="form-group">
+			<label>Remarque</label>
+			<text-angular ng-model="pathology.remarque" class="pathology-editor"></text-angular>
+		</div>
+		<button type="submit" class="btn btn-primary btn-lg col-md-3" ng-disabled="disabled">
+			<span ng-if="disabled">
+				<i class="fa fa-spinner"></i> Enregistrement...
+			</span>
+			<span ng-if="!disabled">Enregistrer</span>
+		</button>
+	</form>
+</div>
+
+<!-- Template for levels -->
+<script type="text/ng-template"  id="patho-edit-tree.html">
+	<!-- Level Name -->
+	<div class="form-group level-header">
+		<label class="level-number control-label">
+			<i class="fa fa-arrow-up" ng-if="$index > 0" ng-click="goUp(data, $index)"></i>
+			<i class="fa fa-arrow-down" ng-if="!$last" ng-click="goDown(data, $index)"></i>
+			{{ data.rank }}{{ $index + 1 }}.
+		</label>
+		<div class="level-name">
+			<input class="form-control" type="text" ng-model="data.name" placeholder="Titre du Niveau"/>
+		</div>
+		<div class="btn-group-vertical level-actions" role="group">
+			<div class="btn btn-xs" ng-click="addRootLevel()" ng-show="canAddRootLevel(data, $index)">
+				<i class="fa fa-plus"></i>
+				Niveau
+			</div>
+			<div class="btn btn-xs" ng-click="addSubLevel(data, $index)" ng-show="canAddSubLevel(data)">
+				<i class="fa fa-plus"></i>
+				Sous-Niveau
+			</div>
+			<div class="btn btn-xs" ng-click="addEntry(data)" ng-show="canAddEntry(data)">
+				<i class="fa fa-plus"></i>
+				Entrée
+			</div>
+			<div class="btn btn-xs" ng-click="removeLevel(data, $index)" ng-show="canRemoveLevel(data)">
+				<i class="fa fa-remove red"></i>
+				Niveau
+			</div>
+		</div>
+	</div>
+	<!-- Level Text -->
+	<div class="form-group">
+		<div class="editor-area">
+			<text-angular ng-model="data.text" class="pathology-editor"></text-angular>
+		</div>
+		<!-- Level Class Checkbox -->
+		<input type="checkbox" ng-model="data.is_class" ng-click="checkChildren(data)" />
+		<label class="control-label">Classe Pharmaco-Thérapeutique</label>
+	</div>
+	<!-- Level subTree -->
+	<div ng-if="data.levels && data.levels.length > 0">
+		<div ng-repeat="data in data.levels" ng-include="'patho-edit-tree.html'" class="level" depth="1"></div>
+	</div>
+	<!-- Level entries -->
+	<table class="table entries-edit" ng-if="data.entries && data.entries.length > 0">
+		<tr>
+			<th>Reco</th>
+			<th colspan="2">Produit</th>
+			<th>Info</th>
+		</tr>
+		<tr ng-repeat-start="entry in data.entries">
+			<td class="col-md-1">
+				<ui-select ng-model="entry.reco._id" class="select-reco">
+					<ui-select-match>
+						<img ng-src="front/assets/img/gelule_{{ $select.selected }}_mini.png" alt="{{ $select.selected }}"/>
+					</ui-select-match>
+					<ui-select-choices repeat="reco in recommandations">
+						<img ng-src="front/assets/img/gelule_{{ reco }}.png" alt="{{ reco }}"/>
+					</ui-select-choices>
+				</ui-select>
+			</td>
+			<td class="col-md-2">
+				<ui-select ng-model="entry.type">
+					<ui-select-match>
+						<span ng-bind="$select.selected.name"></span>
+					</ui-select-match>
+					<ui-select-choices repeat="productType._id as productType in productTypes">
+						{{ productType.name }}
+					</ui-select-choices>
+				</ui-select>
+			</td>
+			<td class="col-md-6">
+				<ui-select ng-model="entry.product">
+					<ui-select-match placeholder="Nom du Produit" ng-click="search($select, entry.type, true)">
+						{{ $select.selected.name }}
+						<span class="spec-status" ng-if="$select.selected.status">{{ $select.selected.status }}</span>
+					</ui-select-match>
+					<ui-select-choices ui-disable-choice="!r._id" refresh="search($select, entry.type)" refresh-delay="100" repeat="filterResults(r) as r in results | limitTo: 50">
+						{{ r.name }}  <spec-status status="{{ r.status }}"></spec-status>
+					</ui-select-choices>
+				</ui-select>
+			</td>
+			<td class="col-md-3">
+				<span class="btn" ng-class="(entry.product.status=='G') ? 'btn-success' : 'btn-danger'" ng-click="setStatus(entry.product)">
+					<i class="fa fa-times" ng-if="entry.product.status!='G'"></i>
+					<i class="fa fa-check" ng-if="entry.product.status=='G'"></i>
+					G
+				</span>
+				<span class="btn btn-default" ng-show="isSubstanceOrAsso(entry)" ng-click="displaySpecialities(entry.product.specialities)" ng-model="entry.product.displayOptions" uib-btn-checkbox>
+					Plus
+				</span>
+				<span class="btn btn-default" ng-model="entry.displayInfo" uib-btn-checkbox>Info</span>
+				<span class="btn remove-entry pull-right" ng-click="removeEntry(data, $index)"><i class="fa fa-remove"></i></span>
+			</td>
+		</tr>
+		<tr ng-show="entry.product.displayOptions && isSubstance(entry)">
+			<td colspan="5">
+				<label>Modifier le nom</label>
+				<input type="text" ng-model="entry.product.name" class="form-control" />
+			</td>
+		</tr>
+		<tr ng-show="entry.product.displayOptions">
+			<td colspan="5">
+				<div class="check-all">
+					<a ng-click="checkAllSpecialities(entry.product.specialities)">Tout Cocher</a> /
+					<a ng-click="checkAllSpecialities(entry.product.specialities, false)">Décocher</a>
+				</div>
+				<div class="speciality" ng-repeat="spec in entry.product.specialities">
+					<input type="checkbox" ng-model="spec.enabled" />
+					{{ spec.name }}
+					<span class="spec-status">{{ spec.status }}</span>
+				</div>
+				<div class="close-spec-list btn btn-primary btn-sm" ng-model="entry.product.displayOptions" uib-btn-checkbox>Fermer la liste des spécialités</div>
+			</td>
+		</tr>
+		<tr ng-show="showInfo(entry)" ng-repeat-end>
+			<td colspan="5">
+				<text-angular ng-model="entry.info" class="info-editor"></text-angular>
+			</td>
+		</tr>
+	</table>
+</script>

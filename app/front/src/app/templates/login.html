@@ -1,0 +1,42 @@
+<div class="row" id="page-header">
+	<h1>Connexion</h1>
+</div>
+
+
+<div id="content" class="row caduceus">
+	<form ng-if="!currentUser" id="login-form" class="form" ng-submit="login()">
+		<flash-message duration="4000" show-close="true"></flash-message>
+		<div ng-if="confirmAgain" class="alert alert-warning">
+			<a ng-click="sendConfirmation()" class="pointer">Renvoyer un mail de confirmation</a>
+		</div>
+
+		<div class="form-group">
+			<label for="login-email" class="control-label col-md-4">Email</label>
+			<div class="col-md-8">
+				<input type="email" id="login-email" class="form-control" ng-model="loginForm.email" placeholder="Email" required/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="login-passwd" class="control-label col-md-4">Mot de Passe</label>
+			<div class="col-md-8">
+				<input type="password" id="login-passwd" class="form-control" ng-model="loginForm.passwd" placeholder="Mot de Passe" required/>
+			</div>
+		</div>
+		<div class="form-group">
+			<input type="checkbox" id="remember" ng-model="loginForm.remember" />
+			<label for="remember" class="control-label col-md-4 col-md-offset-4">Connexion automatique</label>
+		</div>
+		<div class="submit row">
+			<button type="submit" class="btn btn-primary btn-lg col-md-4" ng-disabled="disabled">
+				<span ng-if="disabled">
+					<i class="fa fa-spinner"></i> Connexion...
+				</span>
+				<span ng-if="!disabled">Se connecter</span>
+			</button>
+		</div>
+		<div id="register-link">
+			<a ui-sref="reset-password">Mot de passe oublié ?</a> |
+			Pas encore inscrit ? <a ui-sref="register">Inscription en 2 clics !</a>
+		</div>
+	</form>
+</div>

@@ -4,3 +4,4 @@ app/proxy/vhost
 app/proxy/conf/default.conf
 app/log
 app/front/node_modules
+app/front/src/bower_components

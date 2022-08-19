@@ -1,0 +1,175 @@
+<div class="row" id="page-header" ng-if="pathology">
+	<div id="patho-title">
+		<h1 class="inline">{{ ::pathology.name }}</h1>
+		<div ng-click="toggleShowAll()" type="button" id="fold-patho" class="btn btn-default btn-xs inline hidden-xs hidden-sm" ng-switch="foldAll">
+		<span ng-switch-when="true">
+			<i class="fa fa-compress"></i>
+			<b style="color: #B60027; ">Replier la Pathologie</b>
+		</span>
+		<span ng-switch-default>
+			<i class="fa fa-expand"></i>
+			<b style="color: #B60027; ">Déplier la Pathologie</b>
+		</span>
+		</div>
+		<div id="updated-mobile" class="visible-xs-inline visible-sm-inline">
+			(Mise à jour {{ ::pathology.updated_at | date:'mediumDate' }})
+		</div>
+	</div>
+</div>
+
+<div id="content" class="row caduceus">
+	<div id="patho-alerts" ng-if="isAuthorized('admin')">
+		<div ng-if="pathology && !draftMode" class="alert alert-success">Cette Pathologie est validée.</div>
+		<div ng-if="pathology && draftMode" class="alert alert-info">Cette Pathologie est en mode brouillon.</div>
+		<div ng-if="pathology && draftExists" class="alert alert-warning">
+			Un Brouillon existe pour cette Pathologie.
+			<a ui-sref="pathologies.read({id: pathology._id, draft: true})">Voir le Brouilon</a>
+		</div>
+	</div>
+
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<div ng-if="!pathology">
+		<h2 class="center"><i class="fa fa-spinner"></i>Chargement de la Pathologie</h2>
+	</div>
+
+	<div id="sidebar" ng-if="pathology" class="col-md-3 col-md-push-9">
+		<!-- Search bar for mobile devices -->
+		<ui-select class="visible-xs visible-sm" id="sidebar-search-mobile" ng-model="selected.value" on-select="goTo($select)">
+			<ui-select-match placeholder="Rechercher une nouvelle Pathologie...">
+				<span ng-bind="$select.selected.name"></span>
+			</ui-select-match>
+			<ui-select-choices ui-disable-choice="!r._id" refresh="search($select)" refresh-delay="100" repeat="r in results | limitTo: 200">
+				{{ ::r.name }}
+			</ui-select-choices>
+		</ui-select>
+
+		<div id="updated" class="hidden-xs hidden-sm">Mise à jour {{ ::pathology.updated_at | date:'mediumDate' }}</div>
+
+		<!-- Search bar for desktops-->
+		<div id="sidebar-search-container" class="hidden-xs hidden-sm">
+			<ui-select id="sidebar-search" ng-model="selected.value" on-select="goTo($select)">
+				<ui-select-match placeholder="Rechercher une Pathologie...">
+					<span ng-bind="$select.selected.name"></span>
+				</ui-select-match>
+				<ui-select-choices ui-disable-choice="!r._id" refresh="search($select)" refresh-delay="100" repeat="r in results | limitTo: 200">
+					{{ ::r.name }}
+				</ui-select-choices>
+			</ui-select>
+		</div>
+
+		<div ng-if="isAuthorized('admin')">
+			<h2>Admin</h2>
+			<div class="btn-group-vertical" role="group">
+				<a class="btn btn-info" ng-click="visitorMode()">
+					<i class="fa fa-eye"></i>
+					Voir en tant que visiteur
+				</a>
+				<a class="btn btn-default" ng-click="print()">
+					<i class="fa fa-print"></i>
+					Imprimer la Pathologie
+				</a>
+				<a ui-sref="pathologies.edit({id: pathology._id, draft: draftMode})" type="button" class="btn btn-default">
+					<i class="fa fa-edit"></i>
+					Modifier
+				</a>
+				<a ng-if="draftMode" ng-click="validate()" type="button" class="btn btn-success">
+					<i class="fa fa-check"></i>
+					Valider
+				</a>
+				<a ng-if="!draftMode" ng-click="unvalidate()" type="button" class="btn btn-warning">
+					<i class="fa fa-times"></i>
+					Invalider
+				</a>
+				<a ng-click="delete()" type="button" class="btn btn-danger">
+					<i class="fa fa-trash"></i>
+					Supprimer
+				</a>
+			</div>
+		</div>
+		<h2>
+			Sommaire
+			<button class="summary-toggle visible-xs-inline" data-toggle="collapse" data-target=".summary-collapse">
+				<i class="fa fa-caret-down"></i>
+			</button>
+		</h2>
+		<ul id="pathology-summary" class="summary-collapse collapse" ng-if="pathology.levels[0].entries[0] || pathology.levels[0].levels[0] || pathology.levels[1].entries[0]">
+			<li ng-repeat="data in pathology.levels" ng-include="'patho-summary-tree.html'" depth="1"></li>
+		</ul>
+	</div>
+
+	<div id="pathology" class="col-md-9 col-md-pull-3">
+		<div id="intro" class="text" ng-if="pathology.intro" ng-bind-html-compile="pathology.intro | gradify"></div>
+		<div class="pathology-tree" ng-if="pathology.levels[0].entries[0] || pathology.levels[0].levels[0] || pathology.levels[1].entries[0]">
+			<div ng-repeat="data in pathology.levels" ng-include="'patho-tree.html'" class="level" depth="1"></div>
+		</div>
+		<div id="conclu" class="text" ng-if="pathology.conclu" ng-bind-html-compile="pathology.conclu | gradify"></div>
+	</div>
+</div>
+
+<!-- Pathology Tree Template -->
+<script type="text/ng-template"  id="patho-tree.html">
+	<div class="level-header" id="{{ ::data.rank }}{{ ::$index + 1 }}.">
+		<level-title title="{{ ::data.name }}" rank="{{ ::data.rank }}{{ ::$index + 1 }}." depth="{{ ::data.depth }}"></level-title>
+	</div>
+	<div class="text level-text" ng-if="data.text" ng-bind-html-compile="data.text | gradify"></div>
+
+	<div ng-if="data.levels && data.levels.length > 0">
+		<div ng-repeat="data in data.levels" ng-include="'patho-tree.html'" class="level" depth="{{ ::data.depth }}"></div>
+	</div>
+
+	<table class="entries table table-curved" ng-if="data.entries && data.entries.length > 0">
+		<tr ng-repeat-start="entry in data.entries">
+			<td class="reco" ng-switch="entry.reco._id">
+				<div class="pill" ng-switch-when="none"></div>
+				<div class="pill" ng-switch-default="" uib-tooltip="{{ ::recoLabels[entry.reco._id] }}" ui-sref="pages.read({id: 'presentation', '#': 'reco_' + entry.reco._id})">
+					<img ng-src="front/assets/img/gelule_{{ ::entry.reco._id }}_mini.png" alt="{{ ::entry.reco._id }}" />
+				</div>
+			</td>
+			<td class="product">
+				<a ng-if="mobileView && entry.type == 'specialities'" ui-sref="specialities({id: entry.product._id})" target="_blank">
+					{{ ::entry.product.name }} <spec-status status="{{ ::entry.product.status }}"></spec-status>
+				</a>
+				<div ng-if="!mobileView || entry.type != 'specialities'">
+					{{ ::entry.product.name }} <spec-status status="{{ ::entry.product.status }}"></spec-status>
+				</div>
+			</td>
+			<td ng-if="!mobileView" class="more-info" ng-class="entry.info ? 'has-info' : 'no-info'" ng-switch="entry.type" colspan="{{ ::entryColspan(entry) }}">
+				<div ng-switch-when="specialities">
+					<a ui-sref="specialities({id: entry.product._id})" target="_blank">RCP ANSM/EMEA</a>
+				</div>
+				<div ng-switch-default="">
+					<a ng-model="entry.displaySpecialities" uib-btn-checkbox>
+						Liste des médicaments
+					</a>
+				</div>
+			</td>
+			<td ng-if="entry.info && !mobileView" class="info-button" ng-class="{'active':entry.displayInfo}">
+				<div ng-model="entry.displayInfo" uib-btn-checkbox>Info*</div>
+			</td>
+		</tr>
+		<tr ng-if="entry.displayInfo">
+			<td class="italic" colspan="5">
+				<span class="bold">Info:</span>
+				<span ng-bind-html="entry.info"></span>
+			</td>
+		</tr>
+		<tr ng-if="entry.displaySpecialities" ng-repeat-end>
+			<td colspan="5">
+				<div class="speciality" ng-repeat="spec in entry.product.specialities" ng-if="spec.enabled">
+					<a ui-sref="specialities({id: spec._id})" target="_blank">{{ ::spec.name }}</a>
+					<spec-status status="{{ ::spec.status }}"></spec-status>
+				</div>
+			</td>
+		</tr>
+	</table>
+</script>
+
+<!-- Pathology Summary Tree Template -->
+<script type="text/ng-template"  id="patho-summary-tree.html">
+	<a class="pointer" ng-click="scrollTo(data.rank, $index)">{{ ::data.rank }}{{ ::$index + 1 }}. {{ ::data.name }}</a>
+
+	<ul ng-if="data.levels && data.levels.length > 0">
+		<li ng-repeat="data in data.levels" ng-include="'patho-summary-tree.html'" depth="{{ ::data.depth }}"></li>
+	</ul>
+</script>

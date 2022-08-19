@@ -1,0 +1,38 @@
+<div class="row news" id="page-header">
+	<h1 class="title" ng-if="news.length > 0">PrescriNews</h1>
+
+	<h1 class="title" ng-if="news.name"><p ng-bind-html="news.name"></h1>
+	<div class="info pull-right" ng-if="news.name">
+		<div class="author">Par {{ news.author.name }}</div>
+		<div class="date">{{ news.created_at | date:"'le' dd/MM/yyyy 'à' HH:mm" }}</div>
+	</div>
+</div>
+
+<div id="content" class="row caduceus">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<div ng-if="news.length > 0" ng-repeat="n in news" class="news-list">
+		<div class="header">
+			<div class="title">
+				<h2 class="inline"><p ng-bind-html="n.name"></p></h2>
+				<div ng-if="isAuthorized('admin')" class="inline action-buttons">
+					<div class="btn-group" role="group">
+						<a ui-sref="news.edit({id: n._id})" type="button" class="btn btn-sm btn-default">
+							<i class="fa fa-edit"></i>
+						</a>
+						<a ng-click="delete(n._id)" type="button" class="btn btn-sm btn-danger">
+							<i class="fa fa-trash"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="info pull-right">
+				<div class="date">{{ n.created_at | date:'mediumDate' }}</div>
+			</div>
+		</div>
+		<div ng-bind-html="n.text"></div>
+	</div>
+	<div ng-if="news.name">
+		<div class="page-text" ng-bind-html="news.text"></div>
+	</div>
+</div>

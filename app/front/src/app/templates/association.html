@@ -1,0 +1,85 @@
+<div class="row" id="page-header">
+	<h1>Associations de Substances</h1>
+</div>
+
+<div id="content" class="row caduceus">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<div id="asso-edit">
+		<h2 ng-if="!editMode">Ajouter une nouvelle Association de Substances</h2>
+		<h2 ng-if="editMode">Editer l'association : {{ association.name }}</h2>
+		<form ng-submit="submit()" class="form-horizontal">
+			<!-- Asso Name -->
+			<div class="form-group">
+				<input class="form-control" type="text" ng-model="association.name" placeholder="Nom de l'Association (max 50 caractères)" maxlength="50" required/>
+			</div>
+			<!-- Asso Subst List -->
+			<div class="form-group">
+				<ui-select ng-model="selected.value" on-select="addSubstance($select)">
+					<ui-select-match placeholder="Rechercher une Substance...">
+						<span ng-bind="$select.selected.name"></span>
+					</ui-select-match>
+					<ui-select-choices ui-disable-choice="!r._id" refresh="search($select)" refresh-delay="100" repeat="r in results | limitTo: 200">
+						{{ r.name }} <span class="spec-status" ng-if="r.status">{{ r.status }}</span>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+
+			<div ng-if="association.name && association.substances.length == 0">Pas encore de substances associées...</div>
+			<h3 ng-if="association.substances.length > 0">
+				Substances Associées
+			</h3>
+			<ul id="subst-list">
+				<li ng-repeat="subst in association.substances">
+					<i class="fa fa-remove pointer" ng-click="removeSubstance($index)"></i>
+					{{ subst.name }} <span class="spec-status" ng-if="subst.status">{{ subst.status }}</span>
+				</li>
+			</ul>
+
+			<div class="btn-group">
+				<button type="submit" class="btn btn-primary btn-lg" ng-disabled="disabled">Enregistrer</button>
+				<button ng-click="cancel()" type="button" class="btn btn-default btn-lg">Annuler</button>
+			</div>
+		</form>
+	</div>
+
+	<hr />
+
+	<div id="asso-list">
+		<h2>Liste des Associations</h2>
+		<div class="panel panel-default">
+			<table class="table table-condensed table-striped table-bordered">
+				<tr ng-repeat-start="asso in associations">
+					<td class="name col-xs-6 col-md-8">
+						{{ asso.name }}
+						<spec-status status="{{ asso.status }}"></spec-status>
+					</td>
+					<td class="actions col-xs-6 col-md-4">
+						<div class="btn-group btn-group-xs" role="group">
+							<div type="button" class="btn btn-default" ng-model="asso.showSubstances" uib-btn-checkbox>
+								<i class="fa fa-eye"></i>
+								Voir les substances
+							</div>
+							<div ng-click="edit(asso)" type="button" class="btn btn-default">
+								<i class="fa fa-edit"></i>
+								Modifier
+							</div>
+							<div ng-click="delete(asso._id)" type="button" class="btn btn-danger">
+								<i class="fa fa-trash"></i>
+								Supprimer
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr ng-if="asso.showSubstances" ng-repeat-end>
+					<td colspan="2">
+						<div ng-repeat="subst in asso.substances">
+							<a ui-sref="substances({id: subst._id})">{{ subst.name }}</a>
+							<span class="spec-status" ng-if="subst.status">{{ subst.status }}</span>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

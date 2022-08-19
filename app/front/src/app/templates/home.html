@@ -1,0 +1,65 @@
+<flash-message duration="4000" show-close="true"></flash-message>
+<!-- <script>
+    if (location.href != "https://www.prescrisur.fr/#/")
+        window.location.href = "https://www.prescrisur.fr/#/";
+</script>. -->
+<!-- Jumbotron -->
+<h1 id="title" class="hidden-xs">Aide à la Prescription en un clic!</h1>
+<div class="jumbotron">
+	<!-- <p class="lead hidden-xs">
+		4 entrées pour accéder à l'information <small>(voir le <a ui-sref="pages.read({id: 'mode-d-emploi'})">mode d'emploi</a>)</small>
+	</p> -->
+	<div id="search">
+		<div id="search-buttons" class="form-group">
+			<div class="btn-group btn-group-justified " data-toggle="buttons">
+				<label class="btn btn-primary btn-xs-text b_attr" ng-model="searchType"  uib-btn-radio="'pathologies'" style="text-align: left;">
+					<div class="b_attr">Pathologies</div>
+				</label>
+				<label class="btn btn-primary btn-xm-text b_attr" ng-model="searchType"  uib-btn-radio="'specialities'" style="text-align: left;">
+					<div class="b_attr" style="display:inline-block">Médicaments <small style="font-family: ErasLight,Arial,sans-serif;"> (source ANSM)</small></div>
+				</label>
+				<label class="btn btn-primary btn-xs-text b_attr:" ng-model="searchType"  uib-btn-radio="'substances'" style="text-align: left;">
+					<div class="b_attr">Substances</div>
+				</label>
+				<label class="btn btn-primary btn-xl-text b_attr" ng-model="searchType"  uib-btn-radio="'classes'" style="text-align: left;">
+					<div class="b_attr">Classes Pharmaco-Thérapeutiques</div>
+				</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div id="search-bar" style="font-size: 16px;">
+				<ui-select ng-model="selected.value" on-select="goTo($select)">
+					<ui-select-match placeholder="Rechercher..." style="height: 42px;">
+						<span ng-bind="$select.selected.name"></span>
+					</ui-select-match>
+					<ui-select-choices ui-disable-choice="!r._id" refresh="search($select)" refresh-delay="100" repeat="r in results | limitTo: 200">
+						{{ r.name }}
+						<span class="spec-status" ng-if="r.status">{{ r.status }}</span>
+						<span class="pathology" ng-if="r.pathology">({{ r.pathology.name }})</span>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</div>
+	</div>
+	<!--<button class="btn btn-lg btn-primary" ng-click="" role="button">Rechercher</button>-->
+</div>
+
+<div class="row" id="home-info">
+	<div class="col-md-7 hidden-xs">
+		<div class="text-box">
+			<h3 data-toggle="collapse" href="#welcome">Bienvenue sur Prescrisur ! <i class="fa fa-chevron-down"></i></h3>
+			<div class="collapse" id="welcome" ng-bind-html="welcome.text"></div>
+		</div>
+	</div>
+	<div class="col-md-5">
+		<div class="text-box updates">
+			<h3 data-toggle="collapse" href="#update">Dernières Mises à Jour <i class="fa fa-chevron-down"></i></h3>
+			<ul class="collapse" id="update">
+				<li ng-repeat="patho in pathologies | orderBy: '-updated_at' | limitTo: 7">
+					<a ui-sref="pathologies.read({id: patho._id})">{{ patho.name }}</a>
+					<small>- {{ patho.updated_at | date:"dd/MM/yyyy" }}</small>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

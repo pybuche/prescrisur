@@ -1,0 +1,27 @@
+<div class="row" id="page-header">
+	<h1 ng-if="!news">Nouvelle News</h1>
+	<h1 ng-if="news"><p ng-bind-html="news.name"></p></h1>
+</div>
+
+<div id="content" class="row">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<form ng-submit="submit()" id="text-form" class="form-horizontal">
+		<!-- News Name -->
+		<div class="form-group">
+		    <text-angular ng-model="news.name" class="title-editor"></text-angular>
+		</div>
+		<!-- News Text -->
+		<div class="form-group">
+			<label>Contenu</label>
+			<text-angular ng-model="news.text" class="page-editor"></text-angular>
+		</div>
+
+		<button type="submit" class="btn btn-primary btn-lg col-md-3" ng-disabled="disabled">
+			<span ng-if="disabled">
+				<i class="fa fa-spinner"></i> Enregistrement...
+			</span>
+			<span ng-if="!disabled">Enregistrer</span>
+		</button>
+	</form>
+</div>

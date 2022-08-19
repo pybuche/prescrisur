@@ -1,0 +1,101 @@
+<div class="row" id="page-header">
+	<h1>{{ therapeuticClass.name }}</h1>
+</div>
+
+<div id="content" class="row">
+	<div id="sidebar" class="col-md-4 col-md-push-8">
+		<span id="updated">Mise à jour {{ therapeuticClass.pathology.updated_at | date:'mediumDate' }}</span>
+		<div ng-if="isAuthorized('admin')">
+			<h2>Admin</h2>
+			<div ng-click="delete()" type="button" class="btn btn-danger">
+				<i class="fa fa-trash"></i>
+				Supprimer
+			</div>
+		</div>
+		<h2>Pathologie Associée</h2>
+		<a ui-sref="pathologies.read({id: therapeuticClass.pathology._id})">
+			{{ therapeuticClass.pathology.name }}
+		</a>
+		<div class="hidden-sm">
+			<h2>Rechercher</h2>
+			<ui-select id="sidebar-search" ng-model="selected.value" on-select="goTo($select)">
+				<ui-select-match placeholder="Rechercher une Classe...">
+					<span ng-bind="$select.selected.name"></span>
+				</ui-select-match>
+				<ui-select-choices ui-disable-choice="!r._id" refresh="search($select)" refresh-delay="100" repeat="r in results | limitTo: 200">
+					{{ r.name }}
+					<span class="pathology" ng-if="r.pathology">({{ r.pathology.name }})</span>
+				</ui-select-choices>
+			</ui-select>
+		</div>
+	</div>
+
+	<div id="pathology" class="col-md-8 col-md-pull-4">
+		<div class="text level-text" ng-if="therapeuticClass.text" ng-bind-html="therapeuticClass.text"></div>
+		<div ng-if="therapeuticClass.levels.length > 0" class="pathology-tree">
+			<div ng-repeat="data in therapeuticClass.levels" ng-include="'class-tree.html'" ng-init="depth = 1" class="level" depth="{{ depth }}"></div>
+		</div>
+		<div ng-if="therapeuticClass.entries.length > 0" class="entries">
+			<div ng-init="items = therapeuticClass.entries" ng-include="'class-entries.html'" class="entry"></div>
+		</div>
+	</div>
+</div>
+
+<!-- Class Level Tree Template -->
+<script type="text/ng-template" id="class-tree.html">
+	<div class="level-header">
+		<level-title rank="" title="{{ data.name }}" depth="{{ depth }}"></level-title>
+	</div>
+
+	<div class="text level-text" ng-if="data.text" ng-bind-html="data.text"></div>
+
+	<div ng-if="data.levels && data.levels.length > 0">
+		<div ng-repeat="data in data.levels" ng-include="'class-tree.html'" ng-init="depth = depth + 1" class="level" depth="{{ depth }}"></div>
+	</div>
+
+	<div ng-if="data.entries && data.entries.length > 0" class="entries">
+		<div ng-init="items = data.entries" ng-include="'class-entries.html'" class="entry"></div>
+	</div>
+</script>
+
+
+<!-- Class Entries Template -->
+<script type="text/ng-template" id="class-entries.html">
+	<table class="entries table table-curved">
+		<tr ng-repeat-start="entry in items">
+			<td class="reco" ng-switch="entry.reco._id">
+				<div class="pill" ng-switch-when="none"></div>
+				<div class="pill" ng-switch-default="" uib-tooltip="{{ entry.reco.name }}">
+					<img ng-src="front/assets/img/gelule_{{ entry.reco._id }}_mini.png" alt="{{ entry.reco._id }}" />
+				</div>
+			</td>
+			<td class="product">
+				{{ entry.product.name }} <spec-status status="{{ entry.product.status }}"></spec-status>
+			</td>
+			<td class="more-info" ng-switch="entry.type" colspan="{{ entryColspan(entry) }}">
+				<div ng-switch-when="specialities">
+					<a ui-sref="specialities({id: entry.product._id})" target="_blank">RCP ANSM/EMA</a>
+				</div>
+				<div ng-switch-default="">
+					<a ng-model="entry.displaySpecialities" uib-btn-checkbox>Liste des médicaments</a>
+				</div>
+			</td>
+			<td ng-if="entry.info" class="info-button" ng-class="{'active':entry.displayInfo}">
+				<div ng-model="entry.displayInfo" uib-btn-checkbox>Info*</div>
+			</td>
+		</tr>
+		<tr ng-show="entry.displayInfo">
+			<td colspan="5">
+				<span ng-bind-html="entry.info"></span>
+			</td>
+		</tr>
+		<tr ng-show="entry.displaySpecialities" ng-repeat-end>
+			<td colspan="5">
+				<div class="speciality" ng-repeat="spec in entry.product.specialities" ng-if="spec.enabled">
+					<a ui-sref="specialities({id: spec._id})" target="_blank">{{ spec.name }}</a>
+					<spec-status status="{{ spec.status }}"></spec-status>
+				</div>
+			</td>
+		</tr>
+	</table>
+</script>

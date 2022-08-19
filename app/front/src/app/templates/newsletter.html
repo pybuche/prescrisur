@@ -1,0 +1,31 @@
+<div class="row news" id="page-header">
+	<h1>Bienvenue sur la NewsLetter !</h1>
+</div>
+<div id="newsletter" class="row caduceus">
+	<div class="text">
+		<div ng-if="isAnonymous()">
+			<h4>
+				Pour vous inscrire à la NewsLetter, vous devez déjà avoir un compte sur Prescrisur :
+			</h4>
+			<a class="btn btn-success btn-xs news" ui-sref="register">
+				<i class="fa fa-check"></i> S'inscrire
+			</a>
+		</div>
+		<div ng-if="!hasRole('newsletter', me.roles) && !isAnonymous()">
+			<h4>
+				Si vous souhaitez recevoir régulièrement les informations officielles pertinentes concernant les médicaments et les recommandations, inscrivez vous, c'est gratuit et sans engagement
+			</h4>
+			<button class="btn btn-success btn-xs news" ng-click="newsletter(me, true)">
+				<i class="fa fa-check"></i> S'inscrire
+			</button>
+		</div>
+		<div ng-if="hasRole('newsletter', me.roles)">
+			<h4>
+				Vous êtes inscrit à la NewsLetter ! Si vous voulez vous désinscrire, cliquez sur ce bouton :
+			</h4>
+			<button class="btn btn-danger btn-xs news" ng-click="newsletter(me, false)">
+				<i class="fa fa-times"></i> Se désinscrire
+			</button>
+		</div>
+	</div>
+</div>

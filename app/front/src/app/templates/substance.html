@@ -1,0 +1,54 @@
+<div class="row" id="page-header">
+	<h1>{{ substance.name }}</h1>
+</div>
+
+<div id="content" class="row">
+	<flash-message duration="4000" show-close="true"></flash-message>
+
+	<div id="sidebar" ng-if="substance" class="col-md-4 col-md-push-8">
+		<h2>Pathologies Associées</h2>
+		<div class="pathologies">
+			<div ng-if="pathologies.length == 0">
+				Aucune pathologie n'est associée à cette substance.
+			</div>
+			<div class="pathology" ng-repeat="patho in pathologies">
+				<a ui-sref="pathologies.read({id: patho._id})">{{ patho.name }}</a>
+			</div>
+		</div>
+		<div class="hidden-sm">
+			<h2>Rechercher</h2>
+			<ui-select id="sidebar-search" ng-model="selected.value" on-select="goTo($select)">
+				<ui-select-match placeholder="Rechercher une Substance...">
+					<span ng-bind="$select.selected.name"></span>
+				</ui-select-match>
+				<ui-select-choices ui-disable-choice="!r._id" refresh="search($select)" refresh-delay="100" repeat="r in results | limitTo: 200">
+					{{ r.name }}
+					<spec-status status="{{ r.status }}"></spec-status>
+				</ui-select-choices>
+			</ui-select>
+		</div>
+	</div>
+
+	<div id="specialities" ng-if="substance" class="col-md-8 col-md-pull-4">
+		<h2>Spécialités contenant cette substance</h2>
+
+		<div id="spec-search" class="right-inner-icon">
+			<i class="fa fa-search"></i>
+			<input type="search" class="form-control" ng-model="query" placeholder="Filtrer par nom, dosage, type"/>
+		</div>
+
+		<div class="panel panel-default">
+			<table class="table table-condensed table-striped table-bordered">
+				<tr class="speciality" ng-repeat="spec in filteredSpecialities = (substance.specialities | filter:query)">
+					<td>
+						<a ui-sref="specialities({id: spec._id})" target="_blank">{{ spec.name }}</a>
+						<spec-status status="{{ spec.status }}"></spec-status>
+					</td>
+				</tr>
+				<tr ng-if="filteredSpecialities.length == 0">
+					<td>Aucune spécialité ne correspond à ces critères.</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

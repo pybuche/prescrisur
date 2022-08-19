@@ -1,0 +1,37 @@
+<div class="row" id="page-header">
+	<h1 ng-if="!page">Administration des Pages</h1>
+</div>
+
+<div id="content" class="row">
+	<div id="pages-print">
+		<div class="btn btn-default btn-lg" ng-click="print()">
+			<i class="fa fa-print"></i>
+			Imprimer tous les textes
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<table id="pages-list" class="table table-condensed table-striped table-bordered">
+			<tr ng-repeat-start="page in pages">
+				<td class="col-xs-7 col-md-9">
+					{{ page.name }}
+				</td>
+				<td class="actions col-xs-5 col-md-3">
+					<div class="btn-group btn-group-xs" role="group">
+						<div type="button" class="btn btn-default" ng-model="page.showText" uib-btn-checkbox>
+							<i class="fa fa-eye"></i>
+							Voir le texte
+						</div>
+						<div ui-sref="pages.edit({id: page._id})" type="button" class="btn btn-default">
+							<i class="fa fa-edit"></i>
+							Modifier
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr ng-if="page.showText" ng-repeat-end>
+				<td class="text" colspan="2" ng-bind-html="page.text"></td>
+			</tr>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,20 @@
+<div class="row" id="page-header">
+	<h1>Un Problème est survenu...</h1>
+</div>
+
+<div id="content" class="row" ng-switch="code">
+	<div class="jumbotron" ng-switch-when="403">
+		<h1>Vous n'êtes pas autorisé à accéder à cette page !</h1>
+		<p class="lead">
+			Vous allez être redirigé sous peu.
+			<a ui-sref="home">Retourner à l'accueil</a>
+		</p>
+	</div>
+	<div class="jumbotron" ng-switch-default="">
+		<h1>Cette page n'existe pas !</h1>
+		<p class="lead">
+			Vous allez être redirigé sous peu.
+			<a ui-sref="home">Retourner à l'accueil</a>
+		</p>
+	</div>
+</div>
