@@ -8,7 +8,6 @@ from pymongo import ASCENDING, DESCENDING
 from flask import current_app
 from passlib.hash import pbkdf2_sha256
 from itsdangerous import TimedJSONWebSignatureSerializer as URLSafeSerializer, BadSignature, SignatureExpired
-
 from .base_model import BaseModel
 
 class User(BaseModel):
@@ -44,8 +43,10 @@ class User(BaseModel):
 		return User(**user)
 
 	@classmethod
-	def all(cls):
-		objs = cls.collection.find()
+	def all(cls, skip = None, limit = None):
+		skip = 0 if skip is None else skip
+		limit = 100 if limit is None else 100 if limit > 1000 else limit
+		objs = cls.collection.find().sort ("email", 1).skip(int(skip)).limit(int(limit))
 		if not objs:
 			return []
 		users = []
@@ -53,7 +54,14 @@ class User(BaseModel):
 			del u['password_hash']
 			u['timestamp'] = time.mktime(datetime.datetime.strptime(u['register_date'], "%d/%m/%Y").timetuple())
 			users.append(u)
-		return users
+		date = datetime.date.today()
+		stats = {
+			"total": cls.collection.find().count(),
+			"confirmed": cls.collection.find({"confirmed": True}).count(),
+			"newsletter": cls.collection.find({"roles": ["newsletter"]}).count(),
+			"month": cls.collection.find({"register_date": {"$regex": str(date.month) + "\/" + str(date.year), "$options" :'i'}}).count()
+		}
+		return {"users": users, "stats": stats}
 
 	def confirm(self):
 		self.confirmed = True
@@ -106,48 +114,8 @@ class User(BaseModel):
 	def get_id(self):
 		return self._id
 
-	def get_mail_chimp_members(self):
-		headers = {
-			'Authorization':current_app.config['MC_API_KEY']
-		}
-		r = requests.get(current_app.config['MC_URL_LIST_CONTACTS'], headers=headers)
-		return r
-
-	def add_mail_chimp(self):
-		data = {
-			"email_address": self.email,
-			"status":"subscribed",
-			"merge_fields":{
-				"PRENOM":self.name,
-				"NOM":self.name,
-				"STATUT":"Pharmacien"
-			}
-		}
-		headers = {
-			'content-type': 'application/json',
-			'Authorization':current_app.config['MC_API_KEY']
-		}
-		r = requests.post(current_app.config['MC_URL_LIST_CONTACTS'], headers=headers, data=json.dumps(data))
-		return r
-
-	def remove_mail_chimp(self):
-		r = self.get_mail_chimp_members()
-		liste = json.loads(r.text)
-		for member in liste['members']:
-			if self.email in member['email_address']:
-				print >> sys.stderr, member['id']
-				id_mail_chimp = member['id']
-				url = current_app.config['MC_URL_LIST_CONTACTS'] + '/' + id_mail_chimp
-				headers = {
-				'content-type': 'application/json',
-				'Authorization':current_app.config['MC_API_KEY']
-				}
-				r = requests.delete(url, headers=headers)
-		return r
-
 	def add_to_newsletter(self):
 		self.add_role('newsletter')
-		self.add_mail_chimp()
 
 	def __eq__(self, other):
 		if isinstance(other, User):

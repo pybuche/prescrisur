@@ -288,7 +288,9 @@ def search_association():
 @required_role('admin')
 @monitored
 def users():
-	return jsonify(data=User.all())
+	skip = request.args.get('skip', None)
+	limit = request.args.get('limit', None)
+	return jsonify(data=User.all(skip, limit))
 
 
 @api.route('/api/users/<user_id>/subscription', methods=['PUT', 'DELETE'])
@@ -312,10 +314,8 @@ def newsletter(user_id):
 		abort(404)
 	if request.method == 'PUT':
 		u.add_role('newsletter').save()
-		r = u.add_mail_chimp()
 	elif request.method == 'DELETE':
 		u.remove_role('newsletter').save()
-		r = u.remove_mail_chimp()
 	return jsonify({'success': True})
 
 

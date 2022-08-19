@@ -29,7 +29,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 			templateUrl: 'front/app/templates/home.html',
 			access: {restricted: false}
 		})
-		
+
 		.state('homesearch', {
 			url: '/search/:search',
 			controller : 'HomeController',
@@ -235,7 +235,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 				},
 				access: {restricted: true, admin: true}
 			})
-			
+
 		.state('newsletter', {
 			url: '/newsletter',
 			controller: 'NewsLetterController',
@@ -261,6 +261,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 // On route change
 app.run(function ($rootScope, $state, $window, ConfirmQuitService, AuthService) {
 	var postLoginState, postLoginParams;
+	$rootScope.copyright = new Date().getFullYear();
 	$rootScope.$on('$stateChangeStart',
 		function (event, toState, toParams) {
 			// Prevent confirm before quit to run on all pages

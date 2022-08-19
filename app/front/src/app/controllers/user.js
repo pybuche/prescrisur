@@ -1,6 +1,6 @@
 angular.module('prescrisurApp.controllers')
-	
-	
+
+
 .controller("UserController", [
 	'$scope',
 	'Flash',
@@ -23,11 +23,11 @@ angular.module('prescrisurApp.controllers')
 			}
 			return !$scope.badConfirmPasswd;
 		};
-		
+
 		$scope.submit = function() {
 			$scope.error = false;
 			$scope.disabled = true;
-			
+
 			AuthService.updateUser($scope.me)
 				.then(function (data) {
 					if(data.updated_mail) {
@@ -48,8 +48,8 @@ angular.module('prescrisurApp.controllers')
 		};
 	}
 ])
-	
-	
+
+
 .controller("UserAdminController", [
 	'$scope',
 	'$state',
@@ -60,68 +60,56 @@ angular.module('prescrisurApp.controllers')
 	'UserService',
 	'UserSubscriptionService',
 	'UserNewsletterService',
-	
+
 	function($scope, $state, $stateParams, Flash, filterFilter, PageTitleService, UserService, UserSubscriptionService, UserNewsletterService) {
 		PageTitleService.setTitle('Administration des Utilisateurs');
-		
-            var tri = $stateParams.order && $stateParams.order.split('@')[1] ? $stateParams.order.split('@')[0] : $stateParams.order;
-		    $scope.url = $stateParams.order && tri[2] == '-' ? $stateParams.order.split('@')[1]? "#/users/" + $stateParams.order.split('@')[0] : "#/users/" + $stateParams.order + "@true" : ($stateParams.order && $stateParams.order.split('@')[1] ) ?"#/users/" : "#/users/@true";
-            $scope.dontshow = $stateParams.order && $stateParams.order.split('@')[1] ? true : false;
-            
-		UserService.get(function(data) {
-		    var date = new Date();
-            var limite = new Date(date.getFullYear(), date.getMonth(), 1).getTime()/1000;
-            $scope.selected = "Mois";
-		    if($stateParams.order && tri[2] != '-')
-		    {$scope.order = tri;
-		    }
-		    else{
-		        $scope.order = "-timestamp";
-		        if ($stateParams.order && tri[2] == '-'){
-		            var ref = new Date(tri);
-		            $scope.limit_d = ref.getTime()/1000;
-		            $scope.limit_u = new Date(ref.getFullYear(), ref.getMonth() + 1, 1).getTime()/1000;
-		            limite =  $scope.limit_u;
-		            var number = parseInt(tri.split('-')[0]) - 1;
-		            var months = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'décembre'];
-		            $scope.selected = months[number] + ' ' + tri.split('-')[2]; 
-		        }
-		    }
-			$scope.users = data.data;
-			$scope.subscribers = filterFilter(data.data, { roles: 'subscriber' });
-			$scope.lastmonthnews = 0;
-			$scope.lastmonth = 0;
-			var news = filterFilter(data.data, { roles: 'newsletter' });
-			$scope.totalnews = news.length;
-			if ($scope.limit_d && $scope.limit_u){
-			    for (var i3 = 0; i3 < news.length; i3++) {
-			        if(news[i3].timestamp >= $scope.limit_d && news[i3].timestamp < $scope.limit_u){
-                      $scope.lastmonthnews += 1;
-			        }
-                }
-                for (var i4 = 0; i4 < $scope.users.length; i4++) {
-			        if($scope.users[i4].timestamp >= $scope.limit_d && $scope.users[i4].timestamp < $scope.limit_u){
-                        $scope.lastmonth += 1;
-			        }
-                }
-			}else{
-			    for (var i2 = 0; i2 < news.length; i2++) {
-			        if(news[i2].timestamp >= limite){
-                      $scope.lastmonthnews += 1;
-			        }
-                }
-                for (var i = 0; i < $scope.users.length; i++) {
-			        if($scope.users[i].timestamp >= limite){
-                        $scope.lastmonth += 1;
-			        }
-                }
+
+    var tri = $stateParams.order && $stateParams.order.split('@')[1] ? $stateParams.order.split('@')[0] : $stateParams.order;
+		$scope.url = $stateParams.order && tri[2] == '-' ? $stateParams.order.split('@')[1]? "#/users/" + $stateParams.order.split('@')[0] : "#/users/" + $stateParams.order + "@true" : ($stateParams.order && $stateParams.order.split('@')[1] ) ?"#/users/" : "#/users/@true";
+    $scope.dontshow = $stateParams.order && $stateParams.order.split('@')[1] ? true : false;
+		$scope.page = 0;
+		var page = window.location.href.split('users/#');
+		if (page.length > 1){
+			$scope.page = page[1] - 1;
+			$scope.page += 1;
+		}
+		$scope.users = [];
+		$scope.confirmed = 0;
+		$scope.thismonth = 0;
+		$scope.newsletters = 0;
+		$scope.total = 0;
+		$scope.mult = 100;
+
+		$scope.page_update = function(number){
+			number = parseInt(number);
+			if ($scope.total > 0){
+				if ((number - 1) * $scope.mult > $scope.total){
+					return
+				}
+
 			}
-		});
+			if (number < 0){
+				return
+			}
+			$scope.page = number;
+			window.location.href = "/#/users/#" + number;
+
+			UserService.get({skip: ($scope.page * $scope.mult), limit: $scope.mult}, function(data) {
+			  var date = new Date();
+	      var limite = new Date(date.getFullYear(), date.getMonth(), 1).getTime()/1000;
+				$scope.users = data.data["users"];
+				$scope.confirmed = data.data["stats"]["confirmed"];
+				$scope.thismonth = data.data["stats"]["month"];
+				$scope.newsletters = data.data["stats"]["newsletter"];
+				$scope.total = data.data["stats"]["total"];
+			});
+		}
+		$scope.page_update($scope.page);
 
 		$scope.hasRole = function(role, userRoles) {
 			return userRoles.indexOf(role) > -1;
 		};
-		
+
 		$scope.subscribe = function(user, subscribe) {
 			var afterSave = function(msg) {
 				return function() {
@@ -133,7 +121,7 @@ angular.module('prescrisurApp.controllers')
 			var afterError = function() {
 				Flash.create('danger', 'Une erreur est survenue...', 10000);
 			};
-			
+
 			if (subscribe) {
 				UserSubscriptionService.subscribe({ id: user._id }, {}, afterSave(user.name + ' abonné premium !'), afterError);
 			} else {
@@ -153,7 +141,7 @@ angular.module('prescrisurApp.controllers')
 			var afterError = function() {
 				Flash.create('danger', 'Une erreur est survenue...', 10000);
 			};
-			
+
 			if (subscribe) {
 				UserNewsletterService.subscribe({ id: user._id }, {}, afterSave(user.name + ' abonné à la newsletter !'), afterError);
 			} else {

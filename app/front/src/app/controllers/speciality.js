@@ -15,7 +15,7 @@ angular.module('prescrisurApp.controllers')
 		{
 		    if (parseInt($stateParams.id) == not_exist[i])
 		    {
-		            redirect = 0; 
+		            redirect = 0;
 		            break;
 		    }
 		}

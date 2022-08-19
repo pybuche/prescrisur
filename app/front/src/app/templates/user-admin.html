@@ -2,199 +2,132 @@
 	<h1>Administration des Utilisateurs</h1>
 </div>
 
-<div id="content" class="row caduceus">
+<div id="content" class="container caduceus">
 	<flash-message duration="4000" show-close="true"></flash-message>
+  <div class="row">
+		<div id="sidebar" class="col-md-3 col-sm-12" style="margin-bottom: 30px;">
+			<h2>Stats</h2>
 
-	<div id="sidebar" class="col-md-4 col-md-push-9">
-		<h2>Stats</h2>
-		<ul id="users-stats">
-			<li>Nombre d'inscrits : {{ users.length }}</li>
-			<li>Nombre d'abonnés : {{ subscribers.length }}</li>
-			<li>Inscrits ce mois: {{ lastmonth }}</li>
-			<li>Newsletters ce mois : {{ lastmonthnews }}</li>
-			<li>Newsletters total : {{ totalnews }}</li>
-			<li >
-			    <br>
-                <select  ng-if="!dontshow" class="btn btn-default" onchange="location = this.value;">
-                    <option value="#/users/">Trier par</option> 
-	            <option value="#/users/-timestamp">Date (Décroissant)</option> 
-  	            <option value="#/users/timestamp">Date (Croissant)</option>
-  	            <option value="#/users/news">Newsletter</option>
-            </select>
-            <select  ng-if="dontshow" class="btn btn-default" onchange="location = this.value;">
-                    <option value="#/users/@true">Trier par</option> 
-	            <option value="#/users/-timestamp@true">Date (Décroissant)</option> 
-  	            <option value="#/users/timestamp@true">Date (Croissant)</option>
-  	            <option value="#/users/news@true">Newsletter</option>
-            </select>
-            <br><br>
-            <select ng-if="!dontshow" class="btn btn-default" onchange="location = this.value">
-                    <option value="#/users/"> {{ selected }} </option>
-                    <option value="#/users/01-01-2017">janvier 2017</option> 
-	                <option value="#/users/02-01-2017">février 2017</option> 
-  	                <option value="#/users/03-01-2017">mars 2017</option>
-  	                <option value="#/users/04-01-2017">avril 2017</option>
-  	                <option value="#/users/05-01-2017">mai 2017</option>
-  	                <option value="#/users/06-01-2017">juin 2017</option>
-  	                <option value="#/users/07-01-2017">juillet 2017</option>
-  	                <option value="#/users/08-01-2017">aout 2017</option>
-  	                <option value="#/users/09-01-2017">septembre 2017</option>
-  	                <option value="#/users/10-01-2017">octobre 2017</option>
-  	                <option value="#/users/11-01-2017">novembre 2017</option>
-  	                <option value="#/users/12-01-2017">décembre 2017</option>
-  	                <option value="#/users/01-01-2018">janvier 2018</option> 
-	                <option value="#/users/02-01-2018">février 2018</option> 
-  	                <option value="#/users/03-01-2018">mars 2018</option>
-  	                <option value="#/users/04-01-2018">avril 2018</option>
-  	                <option value="#/users/05-01-2018">mai 2018</option>
-  	                <option value="#/users/06-01-2018">juin 2018</option>
-  	                <option value="#/users/07-01-2018">juillet 2018</option>
-  	                <option value="#/users/08-01-2018">aout 2018</option>
-  	                <option value="#/users/09-01-2018">septembre 2018</option>
-  	                <option value="#/users/10-01-2018">octobre 2018</option>
-  	                <option value="#/users/11-01-2018">novembre 2018</option>
-  	                <option value="#/users/12-01-2018">décembre 2018</option>
-  	                <option value="#/users/01-01-2019">janvier 2019</option> 
-	                <option value="#/users/02-01-2019">février 2019</option> 
-  	                <option value="#/users/03-01-2019">mars 2019</option>
-  	                <option value="#/users/04-01-2019">avril 2019</option>
-  	                <option value="#/users/05-01-2019">mai 2019</option>
-  	                <option value="#/users/06-01-2019">juin 2019</option>
-  	                <option value="#/users/07-01-2019">juillet 2019</option>
-  	                <option value="#/users/08-01-2019">aout 2019</option>
-  	                <option value="#/users/09-01-2019">septembre 2019</option>
-  	                <option value="#/users/10-01-2019">octobre 2019</option>
-  	                <option value="#/users/11-01-2019">novembre 2019</option>
-  	                <option value="#/users/12-01-2019">décembre 2019</option>
-            </select>
-            <select ng-if="dontshow" class="btn btn-default" onchange="location = this.value">
-                    <option value="#/users/@true"> {{ selected }} </option>
-                    <option value="#/users/01-01-2017@true">janvier 2017</option> 
-	                <option value="#/users/02-01-2017@true">février 2017</option> 
-  	                <option value="#/users/03-01-2017@true">mars 2017</option>
-  	                <option value="#/users/04-01-2017@true">avril 2017</option>
-  	                <option value="#/users/05-01-2017@true">mai 2017</option>
-  	                <option value="#/users/06-01-2017@true">juin 2017</option>
-  	                <option value="#/users/07-01-2017@true">juillet 2017</option>
-  	                <option value="#/users/08-01-2017@true">aout 2017</option>
-  	                <option value="#/users/09-01-2017@true">septembre 2017</option>
-  	                <option value="#/users/10-01-2017@true">octobre 2017</option>
-  	                <option value="#/users/11-01-2017@true">novembre 2017</option>
-  	                <option value="#/users/12-01-2017@true">décembre 2017</option>
-  	                <option value="#/users/01-01-2018@true">janvier 2018</option> 
-	                <option value="#/users/02-01-2018@true">février 2018</option> 
-  	                <option value="#/users/03-01-2018@true">mars 2018</option>
-  	                <option value="#/users/04-01-2018@true">avril 2018</option>
-  	                <option value="#/users/05-01-2018@true">mai 2018</option>
-  	                <option value="#/users/06-01-2018@true">juin 2018</option>
-  	                <option value="#/users/07-01-2018@true">juillet 2018</option>
-  	                <option value="#/users/08-01-2018@true">aout 2018</option>
-  	                <option value="#/users/09-01-2018@true">septembre 2018</option>
-  	                <option value="#/users/10-01-2018@true">octobre 2018</option>
-  	                <option value="#/users/11-01-2018@true">novembre 2018</option>
-  	                <option value="#/users/12-01-2018@true">décembre 2018</option>
-  	                <option value="#/users/01-01-2019@true">janvier 2019</option> 
-	                <option value="#/users/02-01-2019@true">février 2019</option> 
-  	                <option value="#/users/03-01-2019@true">mars 2019</option>
-  	                <option value="#/users/04-01-2019@true">avril 2019</option>
-  	                <option value="#/users/05-01-2019@true">mai 2019</option>
-  	                <option value="#/users/06-01-2019@true">juin 2019</option>
-  	                <option value="#/users/07-01-2019@true">juillet 2019</option>
-  	                <option value="#/users/08-01-2019@true">aout 2019</option>
-  	                <option value="#/users/09-01-2019@true">septembre 2019</option>
-  	                <option value="#/users/10-01-2019@true">octobre 2019</option>
-  	                <option value="#/users/11-01-2019@true">novembre 2019</option>
-  	                <option value="#/users/12-01-2019@true">décembre 2019</option>
-            </select>
-            <br><br>
-            <div>
-                <input ng-if="dontshow" type="checkbox" id="360" name="360" onchange="location = this.value" value="{{ url }}">
-                <input ng-if="!dontshow" type="checkbox" id="360" name="360" onchange="location = this.value" value="{{ url }}" checked>
-                <label for="360">Affichage 360connect</label>
-            </div>
-</li>
-		</ul>
-	</div>
+  			<div class="row">
+					<div class="col-md-8 col-sm-8" style="display: inline-block;">
+							Inscrits :<br>
+							Confirmés :<br>
+							Newsletter: <br>
+							Depuis le 1er :
+					</div>
+					<div class="col-md-4 col-sm-2" style="text-align: right; display: inline-block;">
+							{{ total }}<br>
+							{{ confirmed }}<br>
+							{{ newsletters }}<br>
+							{{ thismonth }}
+					</div>
+				</div>
 
-	<div class="col-md-8 col-md-pull-4">
-		<div id="users-search" class="right-inner-icon">
-			<i class="fa fa-search"></i>
-			<input type="search" class="form-control" ng-model="query" placeholder="Filtrer par nom, email, role"/>
 		</div>
-
-		<div class="panel panel-default">
-			<table id="users-list" class="table table-condensed table-striped table-bordered">
-				<tr>
-					<th>Nom</th>
-					<th>Email</th>
-					<th>Admin ?</th>
-					<th>Abonné ?</th>
-					<th>Newsletter ?</th>
-					<th>Date inscription</th>
-				</tr>
-				<tr ng-if="order != 'news' && (!limit_d || (user.timestamp > limit_d && user.timestamp < limit_u  )) && (dontshow == false || user.email.split('@')[1] != '360connect.fr')" class="user" ng-repeat="user in users | filter:query | orderBy: order">
-					<td>{{ user.name }}</td>
-					<td>
-						<a href="mailto:{{ user.email }}">{{ user.email }}</a>
-					</td>
-					<td class="icon">
-						<div class="ok" ng-if="hasRole('admin', user.roles)">
-							<i class="fa fa-check-circle"></i>
-						</div>
-						<div class="nok" ng-if="!hasRole('admin', user.roles)">
-							<i class="fa fa-times-circle"></i>
-						</div>
-					</td>
-					<td class="icon">
-						<div class="btn btn-success btn-xs" ng-if="hasRole('subscriber', user.roles)" ng-click="subscribe(user, false)">
-							<i class="fa fa-check"></i> Abonné
-						</div>
-						<div class="btn btn-default btn-xs" ng-if="!hasRole('subscriber', user.roles)" ng-click="subscribe(user, true)">
-							<i class="fa fa-times"></i> Non Abonné
-						</div>
-					</td>
-					<td class="icon">
-						<div class="btn btn-success btn-xs" ng-if="hasRole('newsletter', user.roles)" ng-click="newsletter(user, false)">
-							<i class="fa fa-check"></i> Newsletter
-						</div>
-						<div class="btn btn-default btn-xs news" ng-if="!hasRole('newsletter', user.roles)" ng-click="newsletter(user, true)">
-							<i class="fa fa-times"></i> Non Newsletter
-						</div>
-					</td>
-					<td>{{ user.register_date }}</td>
-				</tr>
-				<tr ng-if="order == 'news' && (!limit_d || (user.timestamp > limit_d && user.timestamp < limit_u  ))" class="user" ng-repeat="user in users | filter:query | orderBy: '-timestamp'">
-					<td ng-if="order == 'news' && hasRole('newsletter', user.roles)">{{ user.name }}</td>
-					<td ng-if="order == 'news' && hasRole('newsletter', user.roles)">
-						<a href="mailto:{{ user.email }}">{{ user.email }}</a>
-					</td>
-					<td class="icon" ng-if="order == 'news' && hasRole('newsletter', user.roles)">
-						<div class="ok" ng-if="hasRole('admin', user.roles)">
-							<i class="fa fa-check-circle"></i>
-						</div>
-						<div class="nok" ng-if="!hasRole('admin', user.roles)">
-							<i class="fa fa-times-circle"></i>
-						</div>
-					</td>
-					<td class="icon" ng-if="order == 'news' && hasRole('newsletter', user.roles)">
-						<div class="btn btn-success btn-xs" ng-if="hasRole('subscriber', user.roles)" ng-click="subscribe(user, false)">
-							<i class="fa fa-check"></i> Abonné
-						</div>
-						<div class="btn btn-default btn-xs" ng-if="!hasRole('subscriber', user.roles)" ng-click="subscribe(user, true)">
-							<i class="fa fa-times"></i> Non Abonné
-						</div>
-					</td>
-					<td class="icon" ng-if="order == 'news' && hasRole('newsletter', user.roles)">
-						<div class="btn btn-success btn-xs" ng-if="hasRole('newsletter', user.roles)" ng-click="newsletter(user, false)">
-							<i class="fa fa-check"></i> Newsletter
-						</div>
-						<div class="btn btn-default btn-xs news" ng-if="!hasRole('newsletter', user.roles)" ng-click="newsletter(user, true)">
-							<i class="fa fa-times"></i> Non Newsletter
-						</div>
-					</td>
-					<td ng-if="order == 'news' && hasRole('newsletter', user.roles)">{{ user.register_date }}</td>
-				</tr>
-			</table>
+		<div class="col-md-9 col-sm-12">
+			<!-- <div id="users-search" class="right-inner-icon">
+				<i class="fa fa-search"></i>
+				<input type="search" class="form-control" ng-model="query" placeholder="Filtrer par nom, email, role"/>
+			</div> -->
+			<div class="">
+				<div style="margin: 15px; text-align: center">
+					<div class="btn btn-default btn-xs news" ng-click="page_update(0)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
+						0
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="page < 10" disabled style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">_</div>
+					<div class="btn btn-default btn-xs news" ng-if="page >= 10" ng-click="page_update(page - 10)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ page - 10 }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="page <= 0" disabled style="width: 35px; padding-top: 8px; height: 35px">_</div>
+					<div class="btn btn-default btn-xs news" ng-if="page > 0" ng-click="page_update(page - 1)" style="width: 35px; padding-top: 8px; height: 35px">
+						{{ page - 1}}
+					</div>
+					<div class="btn btn-primary btn-xs news" style="width: 35px; padding-top: 8px; height: 35px">
+						{{ page }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 1) * mult <= total" ng-click="page_update(page + 1)" style="width: 35px; padding-top: 8px; height: 35px">
+						{{ page + 1 }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 1) * mult > total" disabled style="width: 35px; padding-top: 8px; height: 35px">_</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 10) * mult <= total" ng-click="page_update(page + 10)" style="margin-left: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ page + 10 }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 10) * mult > total" ng-click="page_update((total / mult) + ' ').split('.')[0]" style="margin-left: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ ((total / mult) + " ").split('.')[0] }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-click="page_update((total / mult) + ' ').split('.')[0]" style="margin-left: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ ((total / mult) + " ").split('.')[0] }}
+					</div>
+				</div>
+				Utilisateur {{ mult * (page) }} à {{ mult * (page + 1) }}
+				<table id="users-list" class="table table-condensed table-striped">
+					<tr>
+						<th>Email</th>
+						<th style="text-align: center">Nom</th>
+						<th style="text-align: center">Roles</th>
+						<th style="text-align: center">Date inscription</th>
+						<th></th>
+					</tr>
+					<tr class="user" ng-repeat="user in users | filter:query | orderBy: order">
+						<td>
+							<a href="mailto:{{ user.email }}">
+								{{  user.email.length > 25 ?  user.email.slice(0, 23) + ".." : user.email }}
+							</a>
+							<i ng-if="user.confirmed" class="fa fa-check-circle"></i>
+						</td>
+						<td>{{  user.name.length > 14 ?  user.name.slice(0, 12) + ".." : user.name }}</td>
+						<td class="icon" style="text-align: center">
+							<div class="btn btn-success btn-xs" ng-if="hasRole('admin', user.roles)">
+								<i class="fa fa-check-circle"></i> Admin
+							</div>
+							<div class="btn btn-default btn-xs news" ng-if="!hasRole('admin', user.roles)">
+								<i class="fa fa-times"></i> Admin
+							</div>
+							<div class="btn btn-success btn-xs" ng-if="hasRole('newsletter', user.roles)" ng-click="newsletter(user, false)">
+								<i class="fa fa-check"></i> Newsletter
+							</div>
+							<div class="btn btn-default btn-xs news" ng-if="!hasRole('newsletter', user.roles)" ng-click="newsletter(user, true)">
+								<i class="fa fa-times"></i> Newsletter
+							</div>
+						</td>
+						<td style="text-align: center">{{ user.register_date }}</td>
+						<td class="icon">
+							<div class="btn btn-primary btn-xs">
+								Debug
+							</div>
+						</td>
+					</tr>
+				</table>
+				<div style="margin: 15px; text-align: center">
+					<div class="btn btn-default btn-xs news" ng-click="page_update(0)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
+						0
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="page < 10" disabled style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">_</div>
+					<div class="btn btn-default btn-xs news" ng-if="page >= 10" ng-click="page_update(page - 10)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ page - 10 }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="page <= 0" disabled style="width: 35px; padding-top: 8px; height: 35px">_</div>
+					<div class="btn btn-default btn-xs news" ng-if="page > 0" ng-click="page_update(page - 1)" style="width: 35px; padding-top: 8px; height: 35px">
+						{{ page - 1}}
+					</div>
+					<div class="btn btn-primary btn-xs news" style="width: 35px; padding-top: 8px; height: 35px">
+						{{ page }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 1) * mult <= total" ng-click="page_update(page + 1)" style="width: 35px; padding-top: 8px; height: 35px">
+						{{ page + 1 }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 1) * mult > total" disabled style="width: 35px; padding-top: 8px; height: 35px">_</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 10) * mult <= total" ng-click="page_update(page + 10)" style="margin-left: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ page + 10 }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-if="(page + 10) * mult > total" ng-click="page_update((total / mult) + ' ').split('.')[0]" style="margin-left: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ ((total / mult) + " ").split('.')[0] }}
+					</div>
+					<div class="btn btn-default btn-xs news" ng-click="page_update((total / mult) + ' ').split('.')[0]" style="margin-left: 20px; width: 35px; padding-top: 8px; height: 35px">
+						{{ ((total / mult) + " ").split('.')[0] }}
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

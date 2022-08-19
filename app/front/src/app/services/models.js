@@ -17,7 +17,7 @@ angular.module('prescrisurApp.modelServices', ['ngResource'])
 		});
 	}
 ])
-	
+
 .factory('PathologySubstanceService', ['$resource',
 	function($resource){
 		return $resource('/api/pathologies/substances/:id');
