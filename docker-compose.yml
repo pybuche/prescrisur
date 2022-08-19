@@ -1,0 +1,114 @@
+version: '3'
+
+networks:
+  proxy:
+  internal:
+    internal: true
+
+volumes:
+  mongodata:
+
+services:
+  nginx:
+    image: jwilder/nginx-proxy:1.0-alpine
+    container_name: nginx
+    restart: always
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: 'true'
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./app/proxy/logs/global:/var/log/nginx
+      - ./app/proxy/conf/:/etc/nginx/conf.d/
+      - ./app/proxy/vhost:/etc/nginx/vhost.d
+      - ./app/proxy/passwd:/etc/nginx/htpasswd
+      - ./app/proxy/data/html:/usr/share/nginx/html
+      - ./app/proxy/data/certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - proxy
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion:2.2
+    container_name: letsencrypt
+    volumes:
+      - ./app/proxy/vhost:/etc/nginx/vhost.d
+      - ./app/proxy/data/html:/usr/share/nginx/html
+      - ./app/proxy/data/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - nginx
+    networks:
+      - proxy
+
+  builder:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.build
+    container_name: prescrisur_builder
+    restart: on-failure:3
+    networks:
+      - proxy
+    volumes:
+      - ./app/front:/home/app/front
+
+  main:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.app
+    container_name: prescrisur
+    tty: true
+    restart: always
+    depends_on:
+      db:
+        condition: "service_healthy"
+      builder:
+        condition: "service_completed_successfully"
+    networks:
+      - proxy
+      - internal
+    expose:
+      - 8080
+    healthcheck:
+      test: exit $$( curl -so /dev/null --fail http://127.0.0.1:8080 && echo 0 || echo 1 )
+      interval: 30s
+      timeout: 1s
+      retries: 1
+    volumes:
+      - ./app/api:/home/app/api:ro
+      - ./app/log:/home/app/logs:rw
+      - ./app/front/src:/home/api/front:ro
+    environment:
+      DB_NAME: Prescrisur
+      APP_URL: www.prescrisur.org
+      LOG_DIR: /home/app/logs
+      DEFAULT_RECIPIENT_EMAIL: prescrisur@gmail.com
+      VIRTUAL_HOST: www.prescrisur.org, prescrisur.org, www.prescrisur.fr, prescrisur.fr
+      VIRTUAL_PORT: 8080
+      LETSENCRYPT_HOST: www.prescrisur.org, prescrisur.org, www.prescrisur.fr, prescrisur.fr
+      LETSENCRYPT_EMAIL: eliot.courtel@wanadoo.fr
+
+  db:
+    image: mongo:5.0.6
+    container_name: prescrisur_db
+    restart: always
+    depends_on:
+      builder:
+        condition: "service_completed_successfully"
+    networks:
+      - internal
+    expose:
+      - 27017
+    healthcheck:
+      test: mongo --eval 'db.runCommand("ping").ok' localhost:27017/test --quiet
+      interval: 30s
+      timeout: 1s
+      retries: 1
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
+      MONGO_INITDB_DATABASE: Prescrisur
+    volumes:
+      - ./app/db/mongo-setup.js:/docker-entrypoint-initdb.d/mongo-setup.js:ro
+      - mongodata:/data/db
