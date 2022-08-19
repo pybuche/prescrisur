@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-import urllib.request
+import urllib2
 import requests
 
 from models import Speciality

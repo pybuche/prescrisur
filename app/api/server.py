@@ -1,7 +1,7 @@
 from flask import Flask
-from config.config import EnvConfig, mail, cors, login_manager
+from config import EnvConfig, mail, cors, login_manager
 from services.json_encoder import ModelJSONEncoder
-from views.views import api
+from views import api
 
 def create_app(config_module):
 	# Create app and set config
