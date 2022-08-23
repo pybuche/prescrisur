@@ -83,8 +83,8 @@ class Pathology(BaseModel):
 
 	def check(self):
 		self.name = bleach.clean(self.name)
-		self.intro = self.cus_blk_clean(commons.remove_blank_br(bleach.clean(self.intro)))
-		self.conclu = commons.remove_blank_br(bleach.clean(self.conclu))
+		self.intro = self.cus_blk_clean(remove_blank_br(bleach.clean(self.intro)))
+		self.conclu = remove_blank_br(bleach.clean(self.conclu))
 		self.levels = map(lambda l: self._check_level(l), self.levels)
 		# FIXME: see if it can be done better (in edition there will not be a "level" option)
 		if self.levels == [None]:
@@ -102,7 +102,7 @@ class Pathology(BaseModel):
 			return None
 		level['name'] = bleach.clean(level['name'])
 		if 'text' in level:
-			level['text'] = commons.remove_blank_br(bleach.clean(level['text']))
+			level['text'] = remove_blank_br(bleach.clean(level['text']))
 		if 'levels' in level:
 			if len(level['levels']) == 0:
 				del level['levels']
@@ -130,7 +130,7 @@ class Pathology(BaseModel):
 			if entry['info'] == "":
 				del entry['info']
 			else:
-				entry['info'] = commons.remove_blank_br(bleach.clean(entry['info']))
+				entry['info'] = remove_blank_br(bleach.clean(entry['info']))
 		if 'displayInfo' in entry:
 			del entry['displayInfo']
 		return entry
