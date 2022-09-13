@@ -323,8 +323,7 @@ def newsletter(user_id):
 @monitored
 def send_mail():
 	data = json.loads(request.data)
-	mail_service.send_to_default(data)
-	return jsonify({'success': True})
+	return jsonify(mail_service.send_to_default(data))
 
 
 ###############

@@ -83,7 +83,7 @@ services:
       DB_NAME: Prescrisur
       APP_URL: www.prescrisur.org
       LOG_DIR: /home/app/logs
-      DEFAULT_RECIPIENT_EMAIL: prescrisur@gmail.com
+      DEFAULT_RECIPIENT_EMAIL: contact@prescrisur.fr
       VIRTUAL_HOST: www.prescrisur.org, prescrisur.org, www.prescrisur.fr, prescrisur.fr
       VIRTUAL_PORT: 8080
       LETSENCRYPT_HOST: www.prescrisur.org, prescrisur.org, www.prescrisur.fr, prescrisur.fr
