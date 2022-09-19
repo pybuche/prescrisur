@@ -54,6 +54,7 @@ class User(BaseModel):
 			del u['password_hash']
 			u['timestamp'] = time.mktime(datetime.datetime.strptime(u['register_date'], "%d/%m/%Y").timetuple())
 			users.append(u)
+		users.sort(key=lambda x: x['timestamp'], reverse=True)
 		date = datetime.date.today()
 		stats = {
 			"total": cls.collection.find().count(),
