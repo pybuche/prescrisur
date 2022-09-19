@@ -45,7 +45,7 @@ class User(BaseModel):
 	@classmethod
 	def all(cls, skip = None, limit = None):
 		skip = 0 if skip is None else skip
-		limit = 100 if limit is None else 100 if limit > 1000 else limit
+		limit = 100000 if limit is None else 100000 if limit > 100000 else limit
 		objs = cls.collection.find().sort ("email", 1).skip(int(skip)).limit(int(limit))
 		if not objs:
 			return []

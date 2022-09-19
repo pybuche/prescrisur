@@ -30,7 +30,7 @@
 				<input type="search" class="form-control" ng-model="query" placeholder="Filtrer par nom, email, role"/>
 			</div> -->
 			<div class="">
-				<div style="margin: 15px; text-align: center">
+				<div style="margin: 15px; text-align: center; display: none">
 					<div class="btn btn-default btn-xs news" ng-click="page_update(0)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
 						0
 					</div>
@@ -59,7 +59,7 @@
 						{{ ((total / mult) + " ").split('.')[0] }}
 					</div>
 				</div>
-				Utilisateur {{ mult * (page) }} à {{ mult * (page + 1) }}
+				<!-- Utilisateur {{ mult * (page) }} à {{ mult * (page + 1) }} -->
 				<table id="users-list" class="table table-condensed table-striped">
 					<tr>
 						<th>Email</th>
@@ -92,13 +92,13 @@
 						</td>
 						<td style="text-align: center">{{ user.register_date }}</td>
 						<td class="icon">
-							<div class="btn btn-primary btn-xs">
+							<div class="btn btn-primary btn-xs" onclick='window.alert(" {{ user.email }} est debugé ");''>
 								Debug
 							</div>
 						</td>
 					</tr>
 				</table>
-				<div style="margin: 15px; text-align: center">
+				<div style="margin: 15px; text-align: center; display: none">
 					<div class="btn btn-default btn-xs news" ng-click="page_update(0)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
 						0
 					</div>
