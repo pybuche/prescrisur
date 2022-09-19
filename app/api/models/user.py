@@ -62,6 +62,7 @@ class User(BaseModel):
 			"newsletter": cls.collection.find({"roles": ["newsletter"]}).count(),
 			"month": cls.collection.find({"register_date": {"$regex": str(date.month) + "\/" + str(date.year), "$options" :'i'}}).count()
 		}
+		time.sleep(10)
 		return {"users": users, "stats": stats}
 
 	def confirm(self):
