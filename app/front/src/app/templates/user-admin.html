@@ -10,6 +10,7 @@
 			Confirmés : {{ confirmed }} <span style="width: 20px"></span>
 			Newsletter: {{ newsletters }} <span style="width: 20px"></span>
 			Depuis le 1er : {{ thismonth }} <span style="width: 20px"></span>
+			<div ng-click="devmod_switch()"> devmod </div>
 		</div>
 		<div class="col-md-12 col-sm-12">
 			<!-- <div id="users-search" class="right-inner-icon">
@@ -17,7 +18,7 @@
 				<input type="search" class="form-control" ng-model="query" placeholder="Filtrer par nom, email, role"/>
 			</div> -->
 			<div class="">
-				<div style="margin: 15px; text-align: center; display: none">
+				<div style="margin: 15px; text-align: center;" ng-if="devmod">
 					<div class="btn btn-default btn-xs news" ng-click="page_update(0)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
 						0
 					</div>
@@ -88,7 +89,7 @@
 						</td>
 					</tr>
 				</table>
-				<div style="margin: 15px; text-align: center; display: none">
+				<div style="margin: 15px; text-align: center" ng-if="devmod">
 					<div class="btn btn-default btn-xs news" ng-click="page_update(0)" style="margin-right: 20px; width: 35px; padding-top: 8px; height: 35px">
 						0
 					</div>
