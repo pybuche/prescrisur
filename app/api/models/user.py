@@ -47,7 +47,7 @@ class User(BaseModel):
 		print(limit, skip, 'end2')
 		skip = 0 if skip is None else skip
 		limit = 100000 if limit is None or limit > 100000 else limit
-		objs = cls.collection.find().sort ("email", 1).skip(skip).limit(limit)
+		objs = cls.collection.find().sort ("email", 1)
 		if not objs:
 			return []
 		users = []
@@ -56,6 +56,7 @@ class User(BaseModel):
 			u['timestamp'] = time.mktime(datetime.datetime.strptime(u['register_date'], "%d/%m/%Y").timetuple())
 			users.append(u)
 		users.sort(key=lambda x: x['timestamp'], reverse=True)
+		users = users[skip:skip+limit]
 		date = datetime.date.today()
 		stats = {
 			"total": cls.collection.find().count(),
