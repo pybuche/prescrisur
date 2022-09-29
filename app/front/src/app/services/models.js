@@ -78,6 +78,14 @@ angular.module('prescrisurApp.modelServices', ['ngResource'])
 	}
 ])
 
+.factory('UserDeleteService', ['$resource',
+	function($resource){
+		return $resource('/api/users/:id', null, {
+			delete: { method: 'DELETE'}
+		});
+	}
+])
+
 .factory('UserSubscriptionService', ['$resource',
 	function($resource){
 		return $resource('/api/users/:id/subscription', null, {
