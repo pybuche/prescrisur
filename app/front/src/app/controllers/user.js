@@ -114,11 +114,16 @@ angular.module('prescrisurApp.controllers')
 		
 		$scope.devmod_switch = function(){
 			$scope.devmod = !$scope.devmod;
-			$scope.mult = 100000;
 			if ($scope.devmod){
 				$scope.mult = 100;
+				$scope.page_update($scope.page);
 			}
-			$scope.page_update($scope.page);
+			else
+			{
+				$scope.mult = 100000;
+				$scope.page_update(0);
+			}
+			
 		}
 		
 		$scope.page_update($scope.page);
