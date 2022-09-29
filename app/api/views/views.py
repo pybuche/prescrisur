@@ -290,6 +290,7 @@ def search_association():
 def users():
 	skip = request.args.get('skip', None)
 	limit = request.args.get('limit', None)
+	print(limit, skip, 'end')
 	return jsonify(data=User.all(skip, limit))
 
 @api.route('/api/users/<user_id>', methods=['PUT', 'DELETE'])
