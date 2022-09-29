@@ -65,9 +65,9 @@ angular.module('prescrisurApp.controllers')
 	function($scope, $state, $stateParams, Flash, filterFilter, PageTitleService, UserService, UserSubscriptionService, UserNewsletterService, UserDeleteService) {
 		PageTitleService.setTitle('Administration des Utilisateurs');
 
-    var tri = $stateParams.order && $stateParams.order.split('@')[1] ? $stateParams.order.split('@')[0] : $stateParams.order;
+    		var tri = $stateParams.order && $stateParams.order.split('@')[1] ? $stateParams.order.split('@')[0] : $stateParams.order;
 		$scope.url = $stateParams.order && tri[2] == '-' ? $stateParams.order.split('@')[1]? "#/users/" + $stateParams.order.split('@')[0] : "#/users/" + $stateParams.order + "@true" : ($stateParams.order && $stateParams.order.split('@')[1] ) ?"#/users/" : "#/users/@true";
-    $scope.dontshow = $stateParams.order && $stateParams.order.split('@')[1] ? true : false;
+    		$scope.dontshow = $stateParams.order && $stateParams.order.split('@')[1] ? true : false;
 		$scope.page = 0;
 		var page = window.location.href.split('users/#');
 		if (page.length > 1){
@@ -79,7 +79,12 @@ angular.module('prescrisurApp.controllers')
 		$scope.thismonth = 0;
 		$scope.newsletters = 0;
 		$scope.total = 0;
-		$scope.mult = 100;
+		$scope.mult = 100000;
+		$scope.devmod = false;
+		if ($scope.page > 0){
+			$scope.mult = 100;
+			$scope.devmod = true;
+		}
 
 		$scope.page_update = function(number){
 			number = parseInt(number);
@@ -96,8 +101,8 @@ angular.module('prescrisurApp.controllers')
 			window.location.href = "/#/users/#" + number;
 
 			UserService.get({skip: ($scope.page * $scope.mult), limit: $scope.mult}, function(data) {
-			  var date = new Date();
-	      var limite = new Date(date.getFullYear(), date.getMonth(), 1).getTime()/1000;
+			  	var date = new Date();
+	      			var limite = new Date(date.getFullYear(), date.getMonth(), 1).getTime()/1000;
 				$scope.users = data.data["users"];
 				$scope.confirmed = data.data["stats"]["confirmed"];
 				$scope.thismonth = data.data["stats"]["month"];
@@ -105,6 +110,16 @@ angular.module('prescrisurApp.controllers')
 				$scope.total = data.data["stats"]["total"];
 			});
 		}
+		
+		$scope.devmod_switch = function(){
+			$scope.devmod = !$scope.devmod;
+			$scope.mult = 100000;
+			if ($scope.devmod){
+				$scope.mult = 100;
+			}
+			$scope.page_update($scope.page);
+		}
+		
 		$scope.page_update($scope.page);
 
 		$scope.hasRole = function(role, userRoles) {
