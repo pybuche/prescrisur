@@ -148,5 +148,20 @@ angular.module('prescrisurApp.controllers')
 				UserNewsletterService.unsubscribe({ id: user._id }, afterSave(user.name + ' désabonné de la newsletter !'), afterError);
 			}
 		}
+		
+		$scope.delete = function(user) {
+			var afterSave = function(msg) {
+				return function() {
+					Flash.create('success', msg);
+					$state.go('users', {}, {reload: true});
+				}
+			};
+
+			var afterError = function() {
+				Flash.create('danger', 'Une erreur est survenue...', 10000);
+			};
+
+			UserService.delete({ id: user._id }, {}, afterSave(user.name + ' supprimé'), afterError);
+		}
 	}
 ]);
