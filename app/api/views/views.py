@@ -288,8 +288,8 @@ def search_association():
 @required_role('admin')
 @monitored
 def users():
-	skip = int(request.args.get('skip', None))
-	limit = int(request.args.get('limit', None))
+	skip = int(request.args.get('skip', 0))
+	limit = int(request.args.get('limit', 0))
 	print(limit, skip, 'end')
 	return jsonify(data=User.all(skip, limit))
 
