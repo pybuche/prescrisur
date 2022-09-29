@@ -295,7 +295,7 @@ def users():
 @api.route('/api/users/<user_id>', methods=['PUT', 'DELETE'])
 @required_role('admin')
 @monitored
-def subscribe(user_id):
+def delete_users(user_id):
 	User.delete(user_id)
 	return jsonify({'success': True})
 
