@@ -60,8 +60,9 @@ angular.module('prescrisurApp.controllers')
 	'UserService',
 	'UserSubscriptionService',
 	'UserNewsletterService',
+	'UserDeleteService',
 
-	function($scope, $state, $stateParams, Flash, filterFilter, PageTitleService, UserService, UserSubscriptionService, UserNewsletterService) {
+	function($scope, $state, $stateParams, Flash, filterFilter, PageTitleService, UserService, UserSubscriptionService, UserNewsletterService, UserDeleteService) {
 		PageTitleService.setTitle('Administration des Utilisateurs');
 
     var tri = $stateParams.order && $stateParams.order.split('@')[1] ? $stateParams.order.split('@')[0] : $stateParams.order;
@@ -161,7 +162,7 @@ angular.module('prescrisurApp.controllers')
 				Flash.create('danger', 'Une erreur est survenue...', 10000);
 			};
 
-			UserService.delete({ id: user._id }, {}, afterSave(user.name + ' supprimé'), afterError);
+			UserDeleteService.delete({ id: user._id }, {}, afterSave(user.name + ' supprimé'), afterError);
 		}
 	}
 ]);
