@@ -5,18 +5,11 @@
 <div id="content" class="container caduceus">
 	<flash-message duration="4000" show-close="true"></flash-message>
   <div class="row">
-		<div id="sidebar" class="col-md-3 col-sm-12" style="margin-bottom: 30px;">
-			<h2>Stats</h2>
-
-  			<div class="row">
-					<div class="col-md-12 col-sm-12" style="display: inline-block;">
-							Inscrits : {{ total }}
-							Confirmés : {{ confirmed }}
-							Newsletter: {{ newsletters }}
-							Depuis le 1er : {{ thismonth }}
-					</div>
-			</div>
-
+		<div id="sidebar" class="col-md-12 col-sm-12" style="margin-bottom: 30px;">
+			Inscrits : {{ total }} <span style="width: 20px"></span>
+			Confirmés : {{ confirmed }} <span style="width: 20px"></span>
+			Newsletter: {{ newsletters }} <span style="width: 20px"></span>
+			Depuis le 1er : {{ thismonth }} <span style="width: 20px"></span>
 		</div>
 		<div class="col-md-12 col-sm-12">
 			<!-- <div id="users-search" class="right-inner-icon">
@@ -60,6 +53,7 @@
 						<th style="text-align: center">Nom</th>
 						<th></th>
 						<th style="text-align: center">Date inscription</th>
+						<th></th>
 						<th></th>
 					</tr>
 					<tr class="user" ng-repeat="user in users | filter:query | orderBy: order">
