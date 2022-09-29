@@ -292,6 +292,13 @@ def users():
 	limit = request.args.get('limit', None)
 	return jsonify(data=User.all(skip, limit))
 
+@api.route('/api/users/<user_id>', methods=['PUT', 'DELETE'])
+@required_role('admin')
+@monitored
+def subscribe(user_id):
+	User.delete(user_id)
+	return jsonify({'success': True})
+
 
 @api.route('/api/users/<user_id>/subscription', methods=['PUT', 'DELETE'])
 @required_role('admin')
