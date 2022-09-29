@@ -99,7 +99,8 @@ angular.module('prescrisurApp.controllers')
 			}
 			$scope.page = number;
 			window.location.href = "/#/users/#" + number;
-
+			
+			$scope.users = [];
 			UserService.get({skip: ($scope.page * $scope.mult), limit: $scope.mult}, function(data) {
 			  	var date = new Date();
 	      			var limite = new Date(date.getFullYear(), date.getMonth(), 1).getTime()/1000;
