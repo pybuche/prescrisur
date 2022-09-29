@@ -9,22 +9,16 @@
 			<h2>Stats</h2>
 
   			<div class="row">
-					<div class="col-md-8 col-sm-8" style="display: inline-block;">
-							Inscrits :<br>
-							Confirmés :<br>
-							Newsletter: <br>
-							Depuis le 1er :
+					<div class="col-md-12 col-sm-12" style="display: inline-block;">
+							Inscrits : {{ total }}
+							Confirmés : {{ confirmed }}
+							Newsletter: {{ newsletters }}
+							Depuis le 1er : {{ thismonth }}
 					</div>
-					<div class="col-md-4 col-sm-2" style="text-align: right; display: inline-block;">
-							{{ total }}<br>
-							{{ confirmed }}<br>
-							{{ newsletters }}<br>
-							{{ thismonth }}
-					</div>
-				</div>
+			</div>
 
 		</div>
-		<div class="col-md-9 col-sm-12">
+		<div class="col-md-12 col-sm-12">
 			<!-- <div id="users-search" class="right-inner-icon">
 				<i class="fa fa-search"></i>
 				<input type="search" class="form-control" ng-model="query" placeholder="Filtrer par nom, email, role"/>
@@ -62,9 +56,9 @@
 				<!-- Utilisateur {{ mult * (page) }} à {{ mult * (page + 1) }} -->
 				<table id="users-list" class="table table-condensed table-striped">
 					<tr>
-						<th>Email</th>
+						<th style="text-align: center">Email</th>
 						<th style="text-align: center">Nom</th>
-						<th style="text-align: center">Roles</th>
+						<th></th>
 						<th style="text-align: center">Date inscription</th>
 						<th></th>
 					</tr>
@@ -80,9 +74,6 @@
 							<div class="btn btn-success btn-xs" ng-if="hasRole('admin', user.roles)">
 								<i class="fa fa-check-circle"></i> Admin
 							</div>
-							<div class="btn btn-default btn-xs news" ng-if="!hasRole('admin', user.roles)">
-								<i class="fa fa-times"></i> Admin
-							</div>
 							<div class="btn btn-success btn-xs" ng-if="hasRole('newsletter', user.roles)" ng-click="newsletter(user, false)">
 								<i class="fa fa-check"></i> Newsletter
 							</div>
@@ -94,6 +85,11 @@
 						<td class="icon">
 							<div class="btn btn-primary btn-xs" onclick="window.alert('Utilisateur debugé ')";>
 								Debug
+							</div>
+						</td>
+						<td class="icon">
+							<div class="btn btn-danger btn-xs" ng-click=="newsletter(user)";>
+								X
 							</div>
 						</td>
 					</tr>
