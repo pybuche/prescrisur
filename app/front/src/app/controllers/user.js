@@ -175,7 +175,6 @@ angular.module('prescrisurApp.controllers')
 			var afterSave = function(msg) {
 				return function() {
 					Flash.create('success', msg);
-					$state.go('users', {}, {reload: true});
 				}
 			};
 
