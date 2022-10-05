@@ -175,6 +175,7 @@ angular.module('prescrisurApp.controllers')
 			var afterSave = function(msg) {
 				return function() {
 					Flash.create('success', msg);
+					document.getElementById(user._id).remove();
 				}
 			};
 
