@@ -57,7 +57,7 @@
 						<th></th>
 						<th></th>
 					</tr>
-					<tr class="user" ng-repeat="user in users | filter:query | orderBy: order">
+					<tr class="user" ng-repeat="user in users | filter:query | orderBy: order" id="{{ user._id }}">
 						<td>
 							<a href="mailto:{{ user.email }}">
 								{{  user.email.length > 25 ?  user.email.slice(0, 23) + ".." : user.email }}
