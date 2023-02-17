@@ -69,7 +69,7 @@
 					<th>Nom</th>
 					<th>Actions</th>
 				</tr>
-				<tr ng-repeat="patho in filteredPathologies = (pathologies | filter:{name: pathoQuery} | orderBy:'name')">
+				<tr ng-repeat="patho in filteredPathologies = (pathologies | filter:{name: pathoQuery} | orderBy:'slug')">
 					<td>{{ patho.name }}</td>
 					<td class="actions">
 						<div class="btn-group btn-group-xs">
