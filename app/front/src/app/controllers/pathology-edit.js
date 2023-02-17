@@ -176,6 +176,22 @@ angular.module('prescrisurApp.controllers')
 			level.entries.splice($index, 1);
 		};
 
+		array_move = function(arr, old_index, new_index) {
+			if (new_index >= arr.length) {
+				var k = new_index - arr.length + 1;
+				while (k--) {
+					arr.push(undefined);
+				}
+			}
+			arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+			return arr; // for testing
+		};
+
+		$scope.moveEntry = function(level, $index, goDown) {
+			level.entries = array_move(level.entries, $index, goDown ? $index + 1 : $index - 1);
+			return;
+		}
+
 		$scope.addSubLevel = function(data, $index) {
 			var rank = getRank(data.rank, $index);
 			var depth = data.depth + 1;

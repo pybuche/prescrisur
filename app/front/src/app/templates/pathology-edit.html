@@ -136,7 +136,11 @@
 					Plus
 				</span>
 				<span class="btn btn-default" ng-model="entry.displayInfo" uib-btn-checkbox>Info</span>
-				<span class="btn remove-entry pull-right" ng-click="removeEntry(data, $index)"><i class="fa fa-remove"></i></span>
+                <div class="pull-right">
+                    <span ng-if="$index != 0" class="btn remove-entry" class="btn remove-entry" ng-click="moveEntry(data, $index, false)"><i class="fa fa-arrow-up"></i></span>
+                    <span ng-if="$index != data.entries.length - 1" class="btn remove-entry" ng-click="moveEntry(data, $index, true)"><i class="fa fa-arrow-down"></i></span>
+                    <span class="btn remove-entry pull-right" ng-click="removeEntry(data, $index)"><i class="fa fa-remove"></i></span>
+                </div>
 			</td>
 		</tr>
 		<tr ng-show="entry.product.displayOptions && isSubstance(entry)">

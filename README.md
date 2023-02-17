@@ -15,3 +15,8 @@ Launch on Production:
     docker-compose -f docker-compose.yml up -d
     docker restart prescrisur
    ```
+
+## TODO
+- Sort admin patho without accent
+- Sort handles for entries in patho
+- MailChimp user import
