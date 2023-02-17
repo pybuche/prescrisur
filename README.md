@@ -13,5 +13,5 @@ Launch on localhost:
 Launch on Production:
  * ```
     docker-compose -f docker-compose.yml up -d
+    docker restart prescrisur
    ```
-
