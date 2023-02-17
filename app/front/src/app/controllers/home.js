@@ -18,9 +18,9 @@ angular.module('prescrisurApp.controllers')
 		$scope.searchType = 'pathologies';
 		$scope.results = [];
 
-		// PageService.get({id: 'bienvenue'}, function(data) {
-		// 	$scope.welcome = data.data;
-		// });
+		PageService.get({id: 'bienvenue'}, function(data) {
+			$scope.welcome = data.data;
+		});
 
 		PathologyService.get(function(data) {
 			$scope.pathologies = data.data;

@@ -505,7 +505,7 @@ def update_user_email(token):
 
 
 # ANSM Update
-@api.route('/api/update/ansm', methods=['POST'])
+@api.route('/api/update/ansm', methods=['GET'])
 @required_role('admin')
 @monitored
 def update_ansm():

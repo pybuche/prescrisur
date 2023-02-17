@@ -44,22 +44,37 @@
 	<!--<button class="btn btn-lg btn-primary" ng-click="" role="button">Rechercher</button>-->
 </div>
 
-<div class="row" id="home-info">
-	<div class="col-md-7 hidden-xs">
-		<div class="text-box">
-			<h3 data-toggle="collapse" href="#welcome">Bienvenue sur Prescrisur ! <i class="fa fa-chevron-down"></i></h3>
-			<div class="collapse" id="welcome" ng-bind-html="welcome.text"></div>
-		</div>
-	</div>
-	<div class="col-md-5">
-		<div class="text-box updates">
-			<h3 data-toggle="collapse" href="#update">Dernières Mises à Jour <i class="fa fa-chevron-down"></i></h3>
-			<ul class="collapse" id="update">
-				<li ng-repeat="patho in pathologies | orderBy: '-updated_at' | limitTo: 7">
-					<a ui-sref="pathologies.read({id: patho._id})">{{ patho.name }}</a>
-					<small>- {{ patho.updated_at | date:"dd/MM/yyyy" }}</small>
-				</li>
-			</ul>
-		</div>
-	</div>
+<div id="home-info">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="text-box updates">
+                <h3 data-toggle="collapse" href="#insert">Nouvelles Situations Cliniques <i class="fa fa-chevron-down"></i></h3>
+                <ul class="collapse" id="insert">
+                    <li ng-repeat="patho in pathologies | orderBy: '-created_at' | limitTo: 7">
+                        <a ui-sref="pathologies.read({id: patho._id})">{{ patho.name }}</a>
+                        <small>- {{ patho.created_at | date:"dd/MM/yyyy" }}</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="text-box updates">
+                <h3 data-toggle="collapse" href="#update">Dernières Mises à Jour <i class="fa fa-chevron-down"></i></h3>
+                <ul class="collapse" id="update">
+                    <li ng-repeat="patho in pathologies | orderBy: '-updated_at' | limitTo: 7">
+                        <a ui-sref="pathologies.read({id: patho._id})">{{ patho.name }}</a>
+                        <small>- {{ patho.updated_at | date:"dd/MM/yyyy" }}</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-box last-text-box">
+                <h3 data-toggle="collapse" href="#welcome">Bienvenue sur Prescrisur !  <i class="fa fa-chevron-down"></i></h3>
+                <div class="collapse" id="welcome" ng-bind-html="welcome.text"></div>
+            </div>
+        </div>
+    </div>
 </div>

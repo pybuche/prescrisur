@@ -15,7 +15,7 @@ bleach.ALLOWED_ATTRIBUTES.update({'a': ['href', 'title', 'target']})
 
 
 class Pathology(BaseModel):
-	PROJECTION = {'name': 1, 'updated_at': 1}
+	PROJECTION = {'name': 1, 'created_at': 1, 'updated_at': 1}
 	AUTHORIZED_TYPES = ['specialities', 'substances', 'associations']
 	RECO_LABELS = {
 		'none': None,
@@ -24,12 +24,13 @@ class Pathology(BaseModel):
 		'ok': 'Substance Recommandée'
 	}
 
-	def __init__(self, name, _id=None, levels=None, intro=None, conclu=None, updated_at=None, **kwargs):
+	def __init__(self, name, _id=None, levels=None, intro=None, conclu=None, created_at=None, updated_at=None, **kwargs):
 		self._id = _id if _id else slugify(name)
 		self.name = name
 		self.levels = levels if levels else []
 		self.intro = intro
 		self.conclu = conclu
+		self.created_at = created_at or datetime.datetime.now().isoformat()
 		self.updated_at = updated_at
 
 	@classmethod

@@ -736,8 +736,20 @@ input::-webkit-input-placeholder {
 }
 
 #home-info .text-box h3 {
+  font-size: 20px;
   cursor: pointer;
   font-family: ErasMedium, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+     i {
+         font-size: 14px
+     }
+}
+
+#home-info .last-text-box {
+    margin-top: 16px;
 }
 
 @media (min-width: 991px) {
