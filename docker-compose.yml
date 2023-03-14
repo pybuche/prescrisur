@@ -13,6 +13,7 @@ services:
     image: jwilder/nginx-proxy:1.0-alpine
     container_name: nginx
     restart: always
+    tty: true
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: 'true'
     ports:
@@ -32,6 +33,7 @@ services:
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion:2.2
     container_name: letsencrypt
+    tty: true
     volumes:
       - ./app/proxy/vhost:/etc/nginx/vhost.d
       - ./app/proxy/data/html:/usr/share/nginx/html
@@ -81,13 +83,13 @@ services:
       - ./app/front/src:/home/api/front:ro
     environment:
       DB_NAME: Prescrisur
-      APP_URL: www.prescrisur.org
+      APP_URL: www.prescrisur.fr
       LOG_DIR: /home/app/logs
       DEFAULT_RECIPIENT_EMAIL: contact@prescrisur.fr
-      VIRTUAL_HOST: www.prescrisur.org, prescrisur.org, www.prescrisur.fr, prescrisur.fr
+      VIRTUAL_HOST: www.prescrisur.fr, prescrisur.fr
       VIRTUAL_PORT: 8080
-      LETSENCRYPT_HOST: www.prescrisur.org, prescrisur.org, www.prescrisur.fr, prescrisur.fr
-      LETSENCRYPT_EMAIL: eliot.courtel@wanadoo.fr
+      LETSENCRYPT_HOST: www.prescrisur.fr, prescrisur.fr
+      LETSENCRYPT_EMAIL: pierrick.boutruche@gmail.com
 
   db:
     image: mongo:5.0.6
