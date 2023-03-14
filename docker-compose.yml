@@ -63,9 +63,9 @@ services:
     tty: true
     restart: always
     depends_on:
-      db:
+      - db:
         condition: "service_healthy"
-      builder:
+      - builder:
         condition: "service_completed_successfully"
     networks:
       - proxy
@@ -96,8 +96,8 @@ services:
     container_name: prescrisur_db
     restart: always
     depends_on:
-      builder:
-        condition: "service_completed_successfully"
+      - builder:
+          condition: "service_completed_successfully"
     networks:
       - internal
     expose:
