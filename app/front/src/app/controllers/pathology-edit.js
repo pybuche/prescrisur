@@ -215,6 +215,28 @@ angular.module('prescrisurApp.controllers')
 			$scope.pathology.levels.push({rank: '', depth: 1});
 		};
 
+		function updateLevelRank(level, newRank) {
+			return level.levels?.map((level) => {
+				return {
+					...level,
+					rank: `${newRank}${level.rank.slice(1)}`,
+					levels: level.levels ? updateLevelRank(level, newRank) : undefined
+				}
+			})
+		}
+
+		$scope.duplicateLevel = function(data, $index) {
+			const newRank = $scope.pathology.levels.length;
+			const duplicatedLevel = angular.copy(data);
+			// const updateDuplicate = {
+			// 	...duplicatedLevel,
+			// 	levels: duplicatedLevel.levels ? updateLevelRank(duplicatedLevel, newRank) : undefined,
+			// }
+			$scope.pathology.levels.push(duplicatedLevel)
+			changeRank(duplicatedLevel, newRank);
+		}
+
+
 		$scope.setStatus = function(product) {
 			if(!product.status) {
 				product.status = 'G';
@@ -263,7 +285,11 @@ angular.module('prescrisurApp.controllers')
 			}];
 		};
 
-		// Function to display or not action buttons
+		// Functions to display or not action buttons
+		$scope.canDuplicateLevel = function(data) {
+			return data.depth == 1;
+		};
+
 		$scope.canAddRootLevel = function(data, $index) {
 			return data.depth == 1 && $index == 0;
 		};

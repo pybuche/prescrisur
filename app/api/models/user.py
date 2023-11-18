@@ -11,7 +11,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as URLSafeSerializer, B
 from .base_model import BaseModel
 
 class User(BaseModel):
-	def __init__(self, _id=None, email=None, password=None, password_hash=None, fname=None, name=None, roles=None, confirmed=False, token=None, register_date=None, timestamp=1483228800000.0, **kwargs):
+	def __init__(self, _id=None, email=None, password=None, password_hash=None, fname=None, name=None, roles=None, confirmed=True, token=None, register_date=None, timestamp=1483228800000.0, **kwargs):
 		self._id = _id if _id else slugify(email)
 		self.email = email
 		self.password_hash = self.hash_password(password, password_hash)

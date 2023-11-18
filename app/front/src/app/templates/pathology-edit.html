@@ -56,6 +56,10 @@
 			<input class="form-control" type="text" ng-model="data.name" placeholder="Titre du Niveau"/>
 		</div>
 		<div class="btn-group-vertical level-actions" role="group">
+            <div class="btn btn-xs" ng-click="duplicateLevel(data, $index)" ng-show="canDuplicateLevel(data)">
+                <i class="fa fa-plus"></i>
+                Dupliquer
+            </div>
 			<div class="btn btn-xs" ng-click="addRootLevel()" ng-show="canAddRootLevel(data, $index)">
 				<i class="fa fa-plus"></i>
 				Niveau
