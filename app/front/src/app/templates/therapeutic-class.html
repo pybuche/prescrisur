@@ -4,7 +4,7 @@
 
 <div id="content" class="row">
 	<div id="sidebar" class="col-md-4 col-md-push-8">
-		<span id="updated">Mise à jour {{ therapeuticClass.pathology.updated_at | date:'mediumDate' }}</span>
+		<div id="updated">Mise à jour {{ therapeuticClass.pathology.updated_at | date:'mediumDate' }}</div>
 		<div ng-if="isAuthorized('admin')">
 			<h2>Admin</h2>
 			<div ng-click="delete()" type="button" class="btn btn-danger">

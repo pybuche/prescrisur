@@ -44,7 +44,8 @@
 			</ui-select-choices>
 		</ui-select>
 
-		<div id="updated" class="hidden-xs hidden-sm">Mise à jour {{ ::pathology.updated_at | date:'mediumDate' }}</div>
+        <div id="created" ng-if="isAuthorized('admin')" class="hidden-xs hidden-sm">Création {{ ::pathology.created_at | date:'mediumDate' }}</div>
+        <div id="updated" class="hidden-xs hidden-sm">Mise à jour {{ ::pathology.updated_at | date:'mediumDate' }}</div>
 
 		<!-- Search bar for desktops-->
 		<div id="sidebar-search-container" class="hidden-xs hidden-sm">

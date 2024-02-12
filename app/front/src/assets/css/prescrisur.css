@@ -1074,6 +1074,13 @@ input::-webkit-input-placeholder {
     }
 }
 
+#created {
+    font-weight: bold;
+    font-style: italic;
+    color: #236892;
+    font-size: 1.1em;
+}
+
 #updated {
     font-weight: bold;
     font-style: italic;
