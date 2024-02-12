@@ -15,13 +15,13 @@ class EnvConfig(object):
 	APP_URL = os.environ.get('APP_URL', 'localhost:8080')
 
 	# Mail Server Configuration
-	MAIL_SERVER = 'smtp.prescrisur.fr'
+	MAIL_SERVER = 'smtp.gmail.com'
 	MAIL_PORT = 465
 	MAIL_USE_TLS = False
 	MAIL_USE_SSL = True
-	MAIL_USERNAME = 'noreply@prescrisur.fr'
+	MAIL_USERNAME = 'prescrisur@gmail.com'
 	MAIL_PASSWORD = 'Loupiac15!'
-	MAIL_DEFAULT_SENDER = 'Prescrisur <noreply@prescrisur.fr>'
+	MAIL_DEFAULT_SENDER = 'Prescrisur <no-reply-prescrisur@gmail.com>'
 	#Mail Chimp
 	MC_URL_LIST_CONTACTS = 'https://us15.api.mailchimp.com/3.0/lists/9a13c1ffc2/members'
 	MC_API_KEY = 'apikey f5fdfd12c39b93e24a07514e5b688715-us15'
