@@ -4,7 +4,8 @@ angular.module('prescrisurApp.modelServices', ['ngResource'])
 	function($resource){
 		return $resource('/api/pathologies/:id/:dest', null, {
 			validate: { method: 'PUT', params: { id: '@id', dest: 'validate' } },
-			unvalidate: { method: 'PUT', params: { id: '@id', dest: 'unvalidate' } }
+			unvalidate: { method: 'PUT', params: { id: '@id', dest: 'unvalidate' } },
+			duplicateAsFirstIntention: { method: 'POST', params: { id: '@id', dest: 'duplicate-first-intention' } }
 		});
 	}
 ])

@@ -117,6 +117,14 @@ angular.module('prescrisurApp.controllers')
 			}
 		};
 
+		$scope.duplicateAsFirstIntention = function() {
+			PathologyService.duplicateAsFirstIntention({ id: $stateParams.id }, function(data) {
+				Flash.create('success', 'Pathologie Dupliquée !');
+				$state.go('pathologies.edit', {id: data.data._id});
+
+			});
+		};
+
 		$scope.scrollTo = function(rank, $index) {
 			var hashToGo = rank+($index+1)+'.';
 			$location.hash(hashToGo);

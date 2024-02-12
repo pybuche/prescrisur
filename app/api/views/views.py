@@ -100,6 +100,19 @@ def edit_pathology_draft(patho_id=None):
 	return jsonify(data=patho), status_code
 
 
+@api.route('/api/pathologies/<patho_id>/duplicate-first-intention', methods=['POST'])
+@required_role('admin')
+@monitored
+def duplicate_pathology_as_first_intention(patho_id):
+	patho = Pathology.get(patho_id)
+	draft = PathologyDraft(**patho.serialize())
+	new_patho = draft.duplicate_as_first_intention()
+	saved = new_patho.create()
+	if not saved.acknowledged:
+		abort(400)
+	return jsonify(data=new_patho)
+
+
 @api.route('/api/pathologies/<patho_id>/validate', methods=['PUT'])
 @required_role('admin')
 @monitored
