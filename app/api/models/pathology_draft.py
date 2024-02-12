@@ -13,6 +13,7 @@ class PathologyDraft(Pathology):
 
 def decrement_level(level):
 	level['depth'] = level['depth'] - 1
+	level['rank'] = level['rank'][2:]
 	if 'levels' in level:
 		level['levels'] = map(lambda l: decrement_level(l), level['levels'])
 	return level
