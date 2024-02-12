@@ -1,4 +1,5 @@
 import re
+import datetime
 import jsonpickle
 from pymongo import ASCENDING
 
@@ -60,6 +61,7 @@ class BaseModel(DB):
 		return jsonpickle.decode(to_string)
 
 	def create(self):
+		self.created_at = datetime.datetime.now().isoformat()
 		return self.collection.insert_one(self.serialize())
 
 	def save(self, upsert=True):
