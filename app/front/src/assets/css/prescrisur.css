@@ -472,10 +472,15 @@
 
 .pathology-editor .ta-editor {
     min-height: 150px;
-    height: 150px;
+    height: 200px;
+    resize: vertical;
     overflow: auto;
     font-family: inherit;
     font-size: 100%;
+}
+
+.pathology-editor .ta-editor .pathology-intro {
+    height: 500px;
 }
 
 .title-editor .ta-editor {
