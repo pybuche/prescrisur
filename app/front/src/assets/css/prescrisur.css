@@ -472,7 +472,7 @@
 
 .pathology-editor .ta-editor {
     min-height: 150px;
-    height: 200px;
+    height: 150px;
     resize: vertical;
     overflow: auto;
     font-family: inherit;
@@ -481,6 +481,14 @@
 
 .pathology-editor .ta-editor .pathology-intro {
     height: 500px;
+}
+
+.pathology-editor .ta-editor .ta-resizer-handle-overlay {
+    width: 500px;
+}
+
+.pathology-editor .ta-editor img {
+    width: 500px;
 }
 
 .title-editor .ta-editor {
@@ -857,6 +865,10 @@ input::-webkit-input-placeholder {
     margin: 0 10px 20px 10px !important;
 }
 
+
+.level-text img {
+    width: 100%;
+}
 
 .level-actions .btn {
     text-align: left;
