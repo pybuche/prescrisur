@@ -5,8 +5,8 @@ import requests
 
 from models import Speciality
 
-SPECIALITIES_URI = 'http://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_bdpm.txt'
-SPEC_STATUS_URI = 'http://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_GENER_bdpm.txt'
+SPECIALITIES_URI = 'https://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_bdpm.txt'
+SPEC_STATUS_URI = 'https://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_GENER_bdpm.txt'
 REG_NAME = r"([a-zA-Z0-9.()'\"\-\/ ]+)(\s([0-9,.\/-]+(\s[0-9])?\s?(bar|G|M|m|µ|n|g|I|%|U|u|POUR|pour|microgramme|gramme).*))"
 REG_TYPE = r" et\s?"
 

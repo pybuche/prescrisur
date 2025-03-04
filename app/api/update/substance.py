@@ -3,7 +3,7 @@ import requests
 
 from models import Substance
 
-SUBSTANCE_URI = 'http://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_COMPO_bdpm.txt'
+SUBSTANCE_URI = 'https://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_COMPO_bdpm.txt'
 
 
 # TODO: Return better KPIs
