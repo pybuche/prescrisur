@@ -381,7 +381,7 @@ def register():
 	user.generate_register_date()
 	user.add_to_newsletter()
 	user.create()
-	send_confirm_email(user.email)
+	#send_confirm_email(user.email)
 	return jsonify(success=True)
 
 
