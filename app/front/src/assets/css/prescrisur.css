@@ -471,8 +471,8 @@
 }
 
 .pathology-editor .ta-editor {
-    min-height: 150px;
-    height: 150px;
+    min-height: 300px;
+    height: 300px;
     resize: vertical;
     overflow: auto;
     font-family: inherit;
@@ -500,7 +500,7 @@
 }
 
 .pathology-editor .ta-scroll-window > .ta-bind {
-    min-height: 149px;
+    min-height: 300px;
 }
 
 .info-editor .ta-editor {
