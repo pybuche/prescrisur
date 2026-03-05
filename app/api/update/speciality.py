@@ -31,6 +31,8 @@ class SpecialityUpdater(object):
 		bulk = Speciality.collection.initialize_ordered_bulk_op()
 		for line in req.iter_lines():
 			line = line.decode('ISO-8859-1').encode('UTF8').split('\t')
+			if len(line) < 4:
+				continue
 			spec_status = self.get_spec_status(line[3])
 			if spec_status:
 				bulk.find({'_id': line[2]}).update({'$set': {'status': spec_status}})
