@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import re
-import urllib2
 import requests
 
 from models import Speciality
@@ -28,9 +27,9 @@ class SpecialityUpdater(object):
 		return self.update_spec_status()
 
 	def update_spec_status(self):
-		req = urllib2.urlopen(SPEC_STATUS_URI)
+		req = requests.get(SPEC_STATUS_URI, stream=True)
 		bulk = Speciality.collection.initialize_ordered_bulk_op()
-		for line in req.readlines():
+		for line in req.iter_lines():
 			line = line.decode('ISO-8859-1').encode('UTF8').split('\t')
 			spec_status = self.get_spec_status(line[3])
 			if spec_status:
