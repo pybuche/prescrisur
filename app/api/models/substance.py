@@ -25,8 +25,10 @@ class Substance(ANSMObject):
 		for s in specs:
 			self.specialities.append(Speciality(**s))
 
-	def add_speciality_from_cis(self, cis):
-		spec = Speciality.get(cis)
+	def add_speciality_from_cis(self, cis, spec_index=None):
+		# spec_index (a {cis: Speciality} dict) lets callers avoid a DB read per composition line;
+		# falls back to a direct DB lookup when not provided.
+		spec = spec_index.get(cis) if spec_index is not None else Speciality.get(cis)
 		if spec:
 			if spec.status == 'R':
 				self.status = 'G'

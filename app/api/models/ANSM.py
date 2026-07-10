@@ -3,6 +3,8 @@
 import re
 import datetime
 
+from pymongo import UpdateOne
+
 from .base_model import BaseModel
 
 
@@ -24,6 +26,21 @@ class ANSMObject(BaseModel):
 	def flag_all_as_deleted(cls):
 		now = datetime.datetime.now().isoformat()
 		return cls.collection.update_many({'deleted_at': None}, {'$set': {'deleted_at': now}})
+
+	def upsert_op(self):
+		# Build a single bulk upsert operation for this document. Stamps updated_at (used by
+		# flag_stale_as_deleted) and sets created_at only on insert via $setOnInsert. This replaces
+		# the two individual round-trips of save() + save(new=True) with one batched op.
+		now = datetime.datetime.now().isoformat()
+		self.updated_at = now
+		self.deleted_at = None
+		data = self.serialize()
+		data.pop('created_at', None)
+		return UpdateOne(
+			{'_id': self._id},
+			{'$set': data, '$setOnInsert': {'created_at': now}},
+			upsert=True
+		)
 
 	@classmethod
 	def flag_stale_as_deleted(cls, since):

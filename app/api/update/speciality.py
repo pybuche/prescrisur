@@ -18,13 +18,15 @@ class SpecialityUpdater(object):
 		# a bad/empty response raises here so nothing is upserted and nothing is flagged deleted.
 		run_start = datetime.datetime.now().isoformat()
 		lines = fetch_lines(SPECIALITIES_URI)
+		ops = []
 		for line in lines:
 			line = line.decode('ISO-8859-1').encode('UTF8').split('\t')
 			if not line or len(line) < 5 or not self.is_valid(line[4], line[6]):
 				continue
-			spec, saved_spec = self.update_one(line)
-			if saved_spec.upserted_id:
-				spec.save(new=True)
+			ops.append(self.build_speciality(line).upsert_op())
+		# One batched round-trip instead of one (or two) per speciality.
+		if ops:
+			Speciality.collection.bulk_write(ops, ordered=False)
 		self.update_spec_status()
 		# Only now, once every current speciality has been upserted, flag the ones that were not
 		# refreshed during this run as deleted. An interruption before this point leaves the
@@ -47,12 +49,12 @@ class SpecialityUpdater(object):
 			return None
 		return bulk.execute()
 
-	def update_one(self, line):
+	def build_speciality(self, line):
 		name, dosage = self.parse_name(line[1])
 		spec_type = self.get_spec_type(line[2])
 		treatment_type = self.get_treatment_type(line[3])
 		full_name = self.get_full_name(name, dosage, spec_type)
-		spec = Speciality(
+		return Speciality(
 			_id=line[0],
 			short_name=name,
 			name=full_name,
@@ -61,7 +63,6 @@ class SpecialityUpdater(object):
 			treatment_type=treatment_type,
 			status=None
 		)
-		return spec, spec.save()
 
 	@staticmethod
 	def is_valid(authorization, marketing):
