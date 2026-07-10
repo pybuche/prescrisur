@@ -20,4 +20,7 @@ def create_app(config_module):
 	return app
 
 app = create_app(EnvConfig)
-app.run(host='0.0.0.0', port=8080, debug=True)
+# threaded=True so a long request (e.g. the ANSM update) doesn't block the /health check the dev
+# server also has to answer. Without it, the healthcheck times out during the update, the container
+# is flagged unhealthy, and the auto-heal cron restarts it mid-update.
+app.run(host='0.0.0.0', port=8080, debug=True, threaded=True)
