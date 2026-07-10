@@ -7,3 +7,6 @@ app/front/node_modules
 app/front/src/bower_components
 
 .idea/
+
+scripts/mongo.daily.7/
+scripts/sh
