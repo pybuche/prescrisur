@@ -520,11 +520,25 @@ def update_user_email(token):
 # ANSM Update
 @api.route('/api/update/ansm', methods=['GET'])
 @required_role('admin')
-@monitored
 def update_ansm():
-	SpecialityUpdater().execute()
-	SubstanceUpdater().execute()
-	return jsonify(success=True)
+	# Stream progress line by line so the admin can watch the update as it runs. The chunked
+	# response also keeps the connection active, which prevents the nginx proxy_read_timeout from
+	# firing a 502 on a long update. Failures are surfaced as an ERROR line in the stream; thanks to
+	# the fail-safe updaters (flag-stale-last), the catalogue is never wiped when that happens.
+	def generate():
+		yield 'Starting ANSM update...\n'
+		try:
+			for msg in SpecialityUpdater().run():
+				yield msg
+			for msg in SubstanceUpdater().run():
+				yield msg
+			yield 'ANSM update completed successfully.\n'
+		except Exception as error:
+			yield '\nERROR: %s\n' % repr(error)
+	resp = Response(stream_with_context(generate()), mimetype='text/plain')
+	resp.headers['X-Accel-Buffering'] = 'no'
+	resp.headers['Cache-Control'] = 'no-cache'
+	return resp
 
 
 # Errors

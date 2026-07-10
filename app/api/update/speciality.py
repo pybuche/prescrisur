@@ -14,10 +14,18 @@ REG_TYPE = r" et\s?"
 class SpecialityUpdater(object):
 
 	def execute(self):
+		# Non-streaming entry point: drive the progress generator to completion.
+		for _ in self.run():
+			pass
+
+	def run(self):
+		# Generator yielding human-readable progress lines, so the caller can stream them.
 		# Record the run start, then fetch & validate the update file BEFORE touching the DB:
 		# a bad/empty response raises here so nothing is upserted and nothing is flagged deleted.
 		run_start = datetime.datetime.now().isoformat()
+		yield 'Specialities: downloading source file...\n'
 		lines = fetch_lines(SPECIALITIES_URI)
+		yield 'Specialities: %d lines fetched, parsing...\n' % len(lines)
 		ops = []
 		for line in lines:
 			line = line.decode('ISO-8859-1').encode('UTF8').split('\t')
@@ -25,13 +33,17 @@ class SpecialityUpdater(object):
 				continue
 			ops.append(self.build_speciality(line).upsert_op())
 		# One batched round-trip instead of one (or two) per speciality.
+		yield 'Specialities: upserting %d entries...\n' % len(ops)
 		if ops:
-			Speciality.collection.bulk_write(ops, ordered=False)
+			res = Speciality.collection.bulk_write(ops, ordered=False)
+			yield 'Specialities: %d inserted, %d updated\n' % (res.upserted_count, res.modified_count)
+		yield 'Specialities: updating statuses...\n'
 		self.update_spec_status()
 		# Only now, once every current speciality has been upserted, flag the ones that were not
 		# refreshed during this run as deleted. An interruption before this point leaves the
 		# catalogue fully visible (only stale) instead of empty.
-		return Speciality.flag_stale_as_deleted(run_start)
+		removed = Speciality.flag_stale_as_deleted(run_start)
+		yield 'Specialities: done (%d flagged as removed)\n' % removed.modified_count
 
 	def update_spec_status(self):
 		lines = fetch_lines(SPEC_STATUS_URI)
