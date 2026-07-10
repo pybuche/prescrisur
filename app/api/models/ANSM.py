@@ -26,6 +26,16 @@ class ANSMObject(BaseModel):
 		return cls.collection.update_many({'deleted_at': None}, {'$set': {'deleted_at': now}})
 
 	@classmethod
+	def flag_stale_as_deleted(cls, since):
+		# Flag only live rows NOT refreshed during this run (updated_at older than run start).
+		# Called at the very end of an update so an interruption never wipes the catalogue.
+		now = datetime.datetime.now().isoformat()
+		return cls.collection.update_many(
+			{'deleted_at': None, '$or': [{'updated_at': {'$lt': since}}, {'updated_at': None}]},
+			{'$set': {'deleted_at': now}}
+		)
+
+	@classmethod
 	def search_by_name(cls, name, proj='default', search_within_deleted=False):
 		name = name.replace("e", "[eéèêë]".decode('UTF-8'))
 		name = name.replace("E", "[eéèêë]".decode('UTF-8'))

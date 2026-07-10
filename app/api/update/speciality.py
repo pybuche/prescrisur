@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
-import requests
+import datetime
 
 from models import Speciality
+from .utils import fetch_lines
 
 SPECIALITIES_URI = 'https://base-donnees-publique.medicaments.gouv.fr/download/file/CIS_bdpm.txt'
 SPEC_STATUS_URI = 'https://base-donnees-publique.medicaments.gouv.fr/download/file/CIS_GENER_bdpm.txt'
@@ -13,29 +14,37 @@ REG_TYPE = r" et\s?"
 class SpecialityUpdater(object):
 
 	def execute(self):
-		# Flag every speciality as deleted to update others and flag the non-updated as deleted in the end
-		Speciality.flag_all_as_deleted()
-		# Then read the update file
-		req = requests.get(SPECIALITIES_URI, stream=True)
-		for line in req.iter_lines():
+		# Record the run start, then fetch & validate the update file BEFORE touching the DB:
+		# a bad/empty response raises here so nothing is upserted and nothing is flagged deleted.
+		run_start = datetime.datetime.now().isoformat()
+		lines = fetch_lines(SPECIALITIES_URI)
+		for line in lines:
 			line = line.decode('ISO-8859-1').encode('UTF8').split('\t')
 			if not line or len(line) < 5 or not self.is_valid(line[4], line[6]):
 				continue
 			spec, saved_spec = self.update_one(line)
 			if saved_spec.upserted_id:
 				spec.save(new=True)
-		return self.update_spec_status()
+		self.update_spec_status()
+		# Only now, once every current speciality has been upserted, flag the ones that were not
+		# refreshed during this run as deleted. An interruption before this point leaves the
+		# catalogue fully visible (only stale) instead of empty.
+		return Speciality.flag_stale_as_deleted(run_start)
 
 	def update_spec_status(self):
-		req = requests.get(SPEC_STATUS_URI, stream=True)
+		lines = fetch_lines(SPEC_STATUS_URI)
 		bulk = Speciality.collection.initialize_ordered_bulk_op()
-		for line in req.iter_lines():
+		has_ops = False
+		for line in lines:
 			line = line.decode('ISO-8859-1').encode('UTF8').split('\t')
 			if len(line) < 4:
 				continue
 			spec_status = self.get_spec_status(line[3])
 			if spec_status:
 				bulk.find({'_id': line[2]}).update({'$set': {'status': spec_status}})
+				has_ops = True
+		if not has_ops:
+			return None
 		return bulk.execute()
 
 	def update_one(self, line):

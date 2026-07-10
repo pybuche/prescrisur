@@ -1,7 +1,8 @@
 # coding=utf-8
-import requests
+import datetime
 
 from models import Substance
+from .utils import fetch_lines
 
 SUBSTANCE_URI = 'https://base-donnees-publique.medicaments.gouv.fr/download/file/CIS_COMPO_bdpm.txt'
 
@@ -11,11 +12,11 @@ class SubstanceUpdater(object):
 
 	def execute(self):
 		substances = {}
-		# Flag every substance as deleted to update others and flag the non-updated as deleted in the end
-		Substance.flag_all_as_deleted()
-		# Then read the update file
-		req = requests.get(SUBSTANCE_URI, stream=True)
-		for line in req.iter_lines():
+		# Record the run start, then fetch & validate the update file BEFORE touching the DB:
+		# a bad/empty response raises here so nothing is upserted and nothing is flagged deleted.
+		run_start = datetime.datetime.now().isoformat()
+		lines = fetch_lines(SUBSTANCE_URI)
+		for line in lines:
 			line = line.decode('ISO-8859-1').encode('UTF8').split('\t')
 			if not line or len(line) < 4:
 				continue
@@ -24,6 +25,10 @@ class SubstanceUpdater(object):
 				substances[subst_id] = self.create_substance(line)
 			substances[subst_id].add_speciality_from_cis(line[0])
 		map(lambda x: self.save_if_has_specialities(substances[x]), substances)
+		# Only now, once every current substance has been upserted, flag the ones that were not
+		# refreshed during this run as deleted. An interruption before this point leaves the
+		# catalogue fully visible (only stale) instead of empty.
+		return Substance.flag_stale_as_deleted(run_start)
 
 	@staticmethod
 	def save_if_has_specialities(subst):
